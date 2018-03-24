@@ -15,8 +15,8 @@
       "my-command-identifier"
     ]
   },
-  "version": "0.1.1",
-  "name": "stackswell",
+  "version": "0.1.4",
+  "name": "Stackswell",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",
   "author": "Joseph Mueller",
