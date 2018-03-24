@@ -4,15 +4,15 @@
   "icon": "icon.png",
   "commands": [
     {
-      "name": "my-command",
-      "identifier": "my-command-identifier",
-      "script": "./my-command.js"
+      "name": "Responsive Type",
+      "identifier": "responsive-type-id",
+      "script": "./responsive-type.js"
     }
   ],
   "menu": {
-    "title": "stackswell",
+    "title": "Stackswell",
     "items": [
-      "my-command-identifier"
+      "responsive-type-id"
     ]
   }
 }
