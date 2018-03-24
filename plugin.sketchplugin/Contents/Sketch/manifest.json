@@ -15,10 +15,10 @@
       "my-command-identifier"
     ]
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "stackswell",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",
-  "author": "Parth Patel",
-  "authorEmail": "parthpatel1001@users.noreply.github.com"
+  "author": "Joseph Mueller",
+  "authorEmail": "hi@stackswell.io"
 }
