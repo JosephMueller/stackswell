@@ -1,6 +1,3 @@
-# build artifacts
-plugin.sketchplugin
-
 # npm
 node_modules
 .npm
