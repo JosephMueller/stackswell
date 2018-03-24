@@ -1,6 +1,6 @@
 {
-  "name": "stackswell",
-  "version": "0.1.0",
+  "name": "Stackswell",
+  "version": "0.1.1",
   "engines": {
     "sketch": ">=3.0"
   },
@@ -21,5 +21,8 @@
   "devDependencies": {
     "@skpm/builder": "^0.4.0"
   },
-  "author": "Parth Patel <parthpatel1001@users.noreply.github.com>"
+  "author": "Joseph Mueller <hi@stackswell.io>",
+  "dependencies": {
+    "npm": "^5.7.1"
+  }
 }
