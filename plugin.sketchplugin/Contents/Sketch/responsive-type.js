@@ -353,18 +353,21 @@ module.exports = function toArray(object) {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 exports['default'] = function (context) {
-    var master_styles = new StacksWell({
-        labels: [['XS'], ['SM'], ['MD'], ['LG'], ['.XL', 'XL', '_XL']],
-        break_points: [576, // <575 xs 
-        767, // 576-767 sm
-        991, // 768-991 md
-        1199 // 991-1199 lg
+    var stacks_well = new StacksWell({
+        labels: [
+        // TODO this should all be .upperCased()
+        ['XS'], ['SM'], ['MD'], ['LG'], ['.XL', 'XL', '_XL']],
+        break_points: [576, // 0-575 xs
+        767, // 576-766 sm
+        991, // 767-990 md
+        1199 // 990-1198 lg
+        // 1999+ xl
         ],
         context: context
     }).init();
 
-    master_styles.artboards.forEach(function (artboard) {
-        var break_point = master_styles.find_break_point_for_artboard(artboard);
+    stacks_well.artboards.forEach(function (artboard) {
+        var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ', break_point);
         var layers = Array.from(artboard.layers()).filter(function (layer) {
             return layer['class']() == "MSLayerGroup";
@@ -375,11 +378,11 @@ exports['default'] = function (context) {
                 return text['class']() == "MSTextLayer";
             });
             texts.forEach(function (text) {
-                var current_style = master_styles.get_style_from_text(text);
+                var current_style = stacks_well.get_style_from_text(text);
                 if (current_style) {
                     console.log("Current style is: " + current_style.name());
 
-                    var style_to_apply = master_styles.get_style_for_break_point(break_point, current_style);
+                    var style_to_apply = stacks_well.get_style_for_break_point(break_point, current_style);
                     if (style_to_apply) {
                         console.log("Going to apply: " + style_to_apply.name());
                         text.setStyle_(style_to_apply.style());
@@ -462,8 +465,8 @@ var StacksWell = function () {
                     if (width < this.break_points[found]) {
                         return this.labels[found];
                     }
-                    found++;
                 }
+
                 return this.labels[found];
             }
 
