@@ -59,7 +59,22 @@ class StacksWell
         return this.labels[found];
     }
 
-    get_style_for_break_point(break_point, style) {
+    get_next_smaller_label(label) {
+        for (var i = this.labels.length - 1; i >=0; i--) {
+            for (var j = 0; j < this.labels[i].length; j++) {
+                if (label == this.labels[i][j]) {
+                    i-=1;
+                    if (i < 0) {
+                        return null;
+                    } else {
+                        return this.labels[i];
+                    }
+                }
+            }
+        }
+    }
+
+    get_style_from_label_and_style(label, style) {
         // if we found one, chop off the first part of the name
         //   ex. md/H1/Black/Left -> H1,Black,Left        
         if (style) {
@@ -67,28 +82,34 @@ class StacksWell
             pieces.shift();
         }
 
-        // since we might provide an array of break_points
-        //  ex. break_point = ['XL', '.XL', '_XL']
+        // since we might provide an array of labels
+        //  ex. label = ['XL', '.XL', '_XL']
         //  try each break point
-        for (var i =0; i < break_point.length; i ++) {
+        for (var i =0; i < label.length; i ++) {
             // reconstruct the style name
-            //  ex. break_point = ['XL', '.XL', '_XL'], pieces = ['H1','Black','Left']
+            //  ex. label = ['XL', '.XL', '_XL'], pieces = ['H1','Black','Left']
             //      bp = 'XL/H1/Black/Left Style'
-            var bp = [break_point[i]].concat(pieces).join('/');
+            var bp = [label[i]].concat(pieces).join('/');
             // if we have a style that maps to this reconstructed name
-            //  give it back, otherwise try the next available break point in break_points
+            //  give it back, otherwise try the next available break point in labels
             if (bp in this.style_map) {
                 return this.style_map[bp];
             }
-        } 
+        }
+        console.log('No style found for break point & style '+ label + ' ' + style);
+        next_smaller = this.get_next_smaller_label(label)
+        if (next_smaller) {
+            console.log('Trying a smaller style to use: '+ next_smaller);
+            return this.get_style_from_label_and_style(next_smaller, style);
+        }
     }
 
-    scale_text_style(text, break_point) {
+    scale_text(text, label) {
         var current_style = this.get_style_from_text(text);
         if (current_style) {
             console.log("Current style is: "+ current_style.name()); 
 
-            var style_to_apply  = this.get_style_for_break_point(break_point, current_style);
+            var style_to_apply  = this.get_style_from_label_and_style(label, current_style);
             if (style_to_apply) {
                 console.log("Going to apply: "+ style_to_apply.name());
                 text.setStyle_(style_to_apply.style());    
@@ -131,10 +152,10 @@ export default function (context) {
         Array.from(artboard.layers()).forEach(function (layer) {
             if (layer.class() == "MSLayerGroup") {
                 var texts = Array.from(layer.layers()).filter(text => text.class() == "MSTextLayer");
-                texts.forEach(text => stacks_well.scale_text_style(text, break_point));
+                texts.forEach(text => stacks_well.scale_text(text, break_point));
             } else if (layer.class() == "MSTextLayer") {
-                stacks_well.scale_text_style(layer, break_point);
+                stacks_well.scale_text(layer, break_point);
             }
         });
     });
-} 
+}

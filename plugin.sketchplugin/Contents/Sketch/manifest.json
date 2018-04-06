@@ -15,7 +15,7 @@
       "responsive-type-id"
     ]
   },
-  "version": "0.1.7",
+  "version": "0.1.8",
   "name": "Stackswell",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",

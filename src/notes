@@ -1,0 +1,26 @@
+(instead of putting the shadow on the symbol||shape)
+
+add layer to symbol
+transparent box
+	size of symbol + margin_amount
+	innershaddow
+		y (-1* margin_amount)
+	pin new layer to symbol ("resizing"/all sides)
+
+# ----------------------------
+have text style thats sm
+	on xl artboard
+	it should go to XL
+		if you don't have a XL style
+		go down one, pick MD, check if its there
+		(look up css min-width media query NOT max-width)
+https://stackoverflow.com/questions/19472199/why-does-mobile-first-responsive-design-tend-to-not-use-max-width-queries-alongs
+
+
+-----
+## Release instructions
+
+npm run build
+
+git tag
+git push
