@@ -76,11 +76,24 @@ class StacksWell
             //      bp = 'XL/H1/Black/Left Style'
             var bp = [break_point[i]].concat(pieces).join('/');
             // if we have a style that maps to this reconstructed name
-            //  give it back, otherwise try the next available break poin in break_points
+            //  give it back, otherwise try the next available break point in break_points
             if (bp in this.style_map) {
                 return this.style_map[bp];
             }
         } 
+    }
+
+    scale_text_style(text, break_point) {
+        var current_style = this.get_style_from_text(text);
+        if (current_style) {
+            console.log("Current style is: "+ current_style.name()); 
+
+            var style_to_apply  = this.get_style_for_break_point(break_point, current_style);
+            if (style_to_apply) {
+                console.log("Going to apply: "+ style_to_apply.name());
+                text.setStyle_(style_to_apply.style());    
+            }
+        }
     }
 
     get artboards() {
@@ -115,22 +128,13 @@ export default function (context) {
     stacks_well.artboards.forEach(function(artboard){
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ' , break_point);
-        var layers = Array.from(artboard.layers()).filter(layer => layer.class() == "MSLayerGroup");
-
-        layers.forEach(function (layer) {
-            var texts = Array.from(layer.layers()).filter(text => text.class() == "MSTextLayer");
-            texts.forEach(function (text) {
-                var current_style = stacks_well.get_style_from_text(text);
-                if (current_style) {
-                    console.log("Current style is: "+ current_style.name()); 
-
-                    var style_to_apply  = stacks_well.get_style_for_break_point(break_point, current_style);
-                    if (style_to_apply) {
-                        console.log("Going to apply: "+ style_to_apply.name());
-                        text.setStyle_(style_to_apply.style());    
-                    }
-                }
-            });
+        Array.from(artboard.layers()).forEach(function (layer) {
+            if (layer.class() == "MSLayerGroup") {
+                var texts = Array.from(layer.layers()).filter(text => text.class() == "MSTextLayer");
+                texts.forEach(text => stacks_well.scale_text_style(text, break_point));
+            } else if (layer.class() == "MSTextLayer") {
+                stacks_well.scale_text_style(layer, break_point);
+            }
         });
     });
 } 
