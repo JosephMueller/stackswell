@@ -4,7 +4,7 @@
   "icon": "icon.png",
   "commands": [
     {
-      "name": "Responsive Type",
+      "name": "Responsive Type [BETA]",
       "identifier": "responsive-type-id",
       "script": "responsive-type.js"
     }
@@ -15,7 +15,7 @@
       "responsive-type-id"
     ]
   },
-  "version": "0.1.8",
+  "version": "0.2.0",
   "name": "Stackswell",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",
