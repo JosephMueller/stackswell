@@ -7,15 +7,21 @@
       "name": "Responsive Type [BETA]",
       "identifier": "responsive-type-id",
       "script": "responsive-type.js"
+    },
+    {
+      "name": "Smart Symbols [BETA]",
+      "identifier": "smart-symbols-id",
+      "script": "smart-symbols.js"
     }
   ],
   "menu": {
     "title": "Stackswell",
     "items": [
-      "responsive-type-id"
+      "responsive-type-id",
+      "smart-symbols-id"
     ]
   },
-  "version": "0.2.0",
+  "version": "0.2.1",
   "name": "Stackswell",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",

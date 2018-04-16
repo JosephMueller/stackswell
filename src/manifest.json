@@ -7,12 +7,18 @@
       "name": "Responsive Type [BETA]",
       "identifier": "responsive-type-id",
       "script": "./responsive-type.js"
+    },
+    {
+      "name": "Smart Symbols [BETA]",
+      "identifier": "smart-symbols-id",
+      "script": "./smart-symbols.js"
     }
   ],
   "menu": {
     "title": "Stackswell",
     "items": [
-      "responsive-type-id"
+      "responsive-type-id",
+      "smart-symbols-id"
     ]
   }
 }
