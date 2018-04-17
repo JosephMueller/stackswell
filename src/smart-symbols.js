@@ -23,7 +23,7 @@ export default function (context) {
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ' , break_point);
         Array.from(artboard.layers())
-            .filter(layer => layer.class() == "MSSymbolInstance" && stacks_well.is_compatible_symbol(layer))
+            .filter(layer => layer.class() == "MSSymbolInstance" && stacks_well.is_compatible_symbol(layer.symbolMaster()))
             .forEach(function (old_symbol) {
                 var old_symbol_master = old_symbol.symbolMaster();
                 console.log('Found symbol: '+old_symbol_master);
@@ -41,7 +41,6 @@ export default function (context) {
                 } else {
                     console.log('No replacement found'); 
                 }
-                
             });
     });
 }

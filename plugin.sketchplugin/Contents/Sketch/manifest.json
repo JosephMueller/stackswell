@@ -21,7 +21,7 @@
       "smart-symbols-id"
     ]
   },
-  "version": "0.2.2",
+  "version": "0.2.3",
   "name": "Stackswell",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",

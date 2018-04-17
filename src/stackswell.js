@@ -124,10 +124,7 @@ class StacksWell
             return this.get_symbol_for_breakpoint(next_smaller, old_symbol);
         } 
     }
-    swap_symbols(sym1, sym2) {
-        // swaps sym1 with sym2
 
-    }
     scale_text(text, label) {
         var current_style = this.get_style_from_text(text);
         if (current_style) {

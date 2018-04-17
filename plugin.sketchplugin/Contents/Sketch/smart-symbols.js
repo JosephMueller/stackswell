@@ -366,7 +366,7 @@ exports['default'] = function (context) {
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ', break_point);
         Array.from(artboard.layers()).filter(function (layer) {
-            return layer['class']() == "MSSymbolInstance" && stacks_well.is_compatible_symbol(layer);
+            return layer['class']() == "MSSymbolInstance" && stacks_well.is_compatible_symbol(layer.symbolMaster());
         }).forEach(function (old_symbol) {
             var old_symbol_master = old_symbol.symbolMaster();
             console.log('Found symbol: ' + old_symbol_master);
@@ -797,16 +797,6 @@ var StacksWell = function () {
             }
 
             return get_master_symbol_for_breakpoint;
-        }()
-    }, {
-        key: 'swap_symbols',
-        value: function () {
-            function swap_symbols(sym1, sym2) {
-                // swaps sym1 with sym2
-
-            }
-
-            return swap_symbols;
         }()
     }, {
         key: 'scale_text',

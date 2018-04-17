@@ -791,16 +791,6 @@ var StacksWell = function () {
             return get_master_symbol_for_breakpoint;
         }()
     }, {
-        key: 'swap_symbols',
-        value: function () {
-            function swap_symbols(sym1, sym2) {
-                // swaps sym1 with sym2
-
-            }
-
-            return swap_symbols;
-        }()
-    }, {
         key: 'scale_text',
         value: function () {
             function scale_text(text, label) {
