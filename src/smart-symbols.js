@@ -23,15 +23,21 @@ export default function (context) {
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ' , break_point);
         Array.from(artboard.layers())
-            .filter(layer => layer.class() == "MSSymbolInstance" && stacks_well.is_compatible_style(layer))
+            .filter(layer => layer.class() == "MSSymbolInstance" && stacks_well.is_compatible_symbol(layer))
             .forEach(function (old_symbol) {
                 var old_symbol_master = old_symbol.symbolMaster();
                 console.log('Found symbol: '+old_symbol_master);
 
-                var replacement = stacks_well.get_symbol_for_breakpoint(break_point, old_symbol_master);
+                var replacement = stacks_well.get_master_symbol_for_breakpoint(break_point, old_symbol_master),
+                    replacement_frame = replacement.frame();
+
                 if (replacement) {
                     console.log('Replace with:'+replacement);
-                    old_symbol.changeInstanceToSymbol(replacement);    
+                    old_symbol.changeInstanceToSymbol(replacement);
+                    // after changing the old_symbol to the requested master
+                    // adjust its height & width to match
+                    old_symbol.frame().setHeight(replacement_frame.height());
+                    old_symbol.frame().setWidth(replacement_frame.width());
                 } else {
                     console.log('No replacement found'); 
                 }

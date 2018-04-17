@@ -759,9 +759,9 @@ var StacksWell = function () {
             return getStyleFromName;
         }()
     }, {
-        key: 'get_symbol_for_breakpoint',
+        key: 'get_master_symbol_for_breakpoint',
         value: function () {
-            function get_symbol_for_breakpoint(break_point, old_symbol) {
+            function get_master_symbol_for_breakpoint(break_point, old_symbol) {
                 var avail_symbols = this.avail_symbols;
                 for (var j = 0; j < break_point.length; j++) {
                     for (var i = 0; i < avail_symbols.length; i++) {
@@ -788,7 +788,7 @@ var StacksWell = function () {
                 }
             }
 
-            return get_symbol_for_breakpoint;
+            return get_master_symbol_for_breakpoint;
         }()
     }, {
         key: 'swap_symbols',

@@ -96,7 +96,7 @@ class StacksWell
         return this.style_map[name];
     }
 
-    get_symbol_for_breakpoint(break_point, old_symbol) {
+    get_master_symbol_for_breakpoint(break_point, old_symbol) {
         var avail_symbols = this.avail_symbols;
         for (var j = 0; j < break_point.length; j++) {
             for (var i = 0; i < avail_symbols.length; i++) {

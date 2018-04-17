@@ -366,15 +366,21 @@ exports['default'] = function (context) {
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ', break_point);
         Array.from(artboard.layers()).filter(function (layer) {
-            return layer['class']() == "MSSymbolInstance" && stacks_well.is_compatible_style(layer);
+            return layer['class']() == "MSSymbolInstance" && stacks_well.is_compatible_symbol(layer);
         }).forEach(function (old_symbol) {
             var old_symbol_master = old_symbol.symbolMaster();
             console.log('Found symbol: ' + old_symbol_master);
 
-            var replacement = stacks_well.get_symbol_for_breakpoint(break_point, old_symbol_master);
+            var replacement = stacks_well.get_master_symbol_for_breakpoint(break_point, old_symbol_master),
+                replacement_frame = replacement.frame();
+
             if (replacement) {
                 console.log('Replace with:' + replacement);
                 old_symbol.changeInstanceToSymbol(replacement);
+                // after changing the old_symbol to the requested master
+                // adjust its height & width to match
+                old_symbol.frame().setHeight(replacement_frame.height());
+                old_symbol.frame().setWidth(replacement_frame.width());
             } else {
                 console.log('No replacement found');
             }
@@ -761,9 +767,9 @@ var StacksWell = function () {
             return getStyleFromName;
         }()
     }, {
-        key: 'get_symbol_for_breakpoint',
+        key: 'get_master_symbol_for_breakpoint',
         value: function () {
-            function get_symbol_for_breakpoint(break_point, old_symbol) {
+            function get_master_symbol_for_breakpoint(break_point, old_symbol) {
                 var avail_symbols = this.avail_symbols;
                 for (var j = 0; j < break_point.length; j++) {
                     for (var i = 0; i < avail_symbols.length; i++) {
@@ -790,7 +796,7 @@ var StacksWell = function () {
                 }
             }
 
-            return get_symbol_for_breakpoint;
+            return get_master_symbol_for_breakpoint;
         }()
     }, {
         key: 'swap_symbols',
