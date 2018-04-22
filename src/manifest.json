@@ -4,11 +4,6 @@
   "icon": "icon.png",
   "commands": [
     {
-      "name": "Responsive Type [BETA]",
-      "identifier": "responsive-type-id",
-      "script": "./responsive-type.js"
-    },
-    {
       "name": "Do Not Resize",
       "identifier": "smart-symbols-no-resize-id",
       "script": "./smart-symbols-no-resize.js"
@@ -22,7 +17,6 @@
   "menu": {
     "title": "Stackswell",
     "items": [
-      "responsive-type-id",
       {
         "title": "Smart Symbols [BETA]",
         "items": [
