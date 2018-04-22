@@ -437,9 +437,8 @@ exports['default'] = function (context) {
     stacks_well.artboards.forEach(function (artboard) {
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ', break_point);
-        var artboards = Array.from(artboard.layers());
 
-        artboards.forEach(function (layer) {
+        Array.from(artboard.layers()).forEach(function (layer) {
             return act_on_layer(layer, break_point, stacks_well);
         });
     });
