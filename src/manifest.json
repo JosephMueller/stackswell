@@ -9,16 +9,27 @@
       "script": "./responsive-type.js"
     },
     {
-      "name": "Smart Symbols [BETA]",
-      "identifier": "smart-symbols-id",
-      "script": "./smart-symbols.js"
+      "name": "Do Not Resize",
+      "identifier": "smart-symbols-no-resize-id",
+      "script": "./smart-symbols-no-resize.js"
+    },
+    {
+      "name": "Fit To Original Symbol",
+      "identifier": "smart-symbols-update-size-id",
+      "script": "./smart-symbols-update-size.js"
     }
   ],
   "menu": {
     "title": "Stackswell",
     "items": [
       "responsive-type-id",
-      "smart-symbols-id"
+      {
+        "title": "Smart Symbols [BETA]",
+        "items": [
+          "smart-symbols-no-resize-id",
+          "smart-symbols-update-size-id"
+        ]
+      }
     ]
   }
 }
