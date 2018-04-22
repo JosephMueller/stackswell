@@ -407,7 +407,13 @@ exports['default'] = function (context) {
         old_frames = {};
 
         Array.from(group.layers()).forEach(function (symbol) {
-            old_frames[symbol] = [symbol.frame().width(), symbol.frame().height()];
+            var old_frame = symbol.frame(),
+                x = old_frame.x(),
+                y = old_frame.y(),
+                w = old_frame.widht(),
+                h = old_frame.height();
+
+            old_frames[symbol] = [w, h, x, y];
 
             if (symbol['class']() == "MSSymbolInstance" && stacks_well.is_compatible_symbol(symbol.symbolMaster())) {
                 console.log(symbol + ' ' + symbol.frame());
@@ -431,6 +437,8 @@ exports['default'] = function (context) {
         Array.from(group.layers()).forEach(function (item) {
             item.frame().setWidth(old_frames[item][0]);
             item.frame().setHeight(old_frames[item][1]);
+            item.frame().setX(old_frames[item][2]);
+            item.frame().setY(old_frames[item][3]);
         });
     }
 
