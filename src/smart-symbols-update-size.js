@@ -65,24 +65,21 @@ export default function (context) {
                 var old_frame = symbol.frame(),
                     x = old_frame.x(),
                     y = old_frame.y(),
-                    w = old_frame.widht(),
+                    w = old_frame.width(),
                     h = old_frame.height();
 
                 old_frames[symbol] = [w,h,x,y]; 
 
-                if (symbol.class() == "MSSymbolInstance" && stacks_well.is_compatible_symbol(symbol.symbolMaster())) {
-                    console.log(symbol+' '+symbol.frame());
-                    var frame = symbol.frame(),
-                        new_x =  frame.x() + frame.width(),
-                        new_y = frame.y() + frame.height();
+                var frame = symbol.frame(),
+                    new_x =  frame.x() + frame.width(),
+                    new_y = frame.y() + frame.height();
 
-                    if (new_x > max_x) {
-                        max_x = new_x;
-                    }
+                if (new_x > max_x) {
+                    max_x = new_x;
+                }
 
-                    if (new_y > max_y) {
-                        max_y = new_y;
-                    }
+                if (new_y > max_y) {
+                    max_y = new_y;
                 }
             });
 
