@@ -4,7 +4,7 @@
   "icon": "icon.png",
   "commands": [
     {
-      "name": "Responsive Type [BETA]",
+      "name": "Responsive Type",
       "identifier": "responsive-type-id",
       "script": "./responsive-type.js"
     },
@@ -24,7 +24,7 @@
     "items": [
       "responsive-type-id",
       {
-        "title": "Smart Symbols [BETA]",
+        "title": "Smart Symbols",
         "items": [
           "smart-symbols-no-resize-id",
           "smart-symbols-update-size-id"
