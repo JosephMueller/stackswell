@@ -109,9 +109,14 @@ class StacksWell
                 var pieces = old_symbol.name().split('/');
                 pieces.pop();
                 var old_symbol_name = pieces.join('/');
-
+                // if the symbol that you are on 
+                // has the "label" (the break point size) 
+                // entirely, and only, in between two slashes (ignore case)
+                // AND
+                // if the symbol that you are on
+                // has the rest of the "old_symbol" (the target of this function)
                 if (symbol.name().toUpperCase().split('/').indexOf(label.toUpperCase()) !== -1
-                    && symbol.name().toUpperCase().split('/').indexOf(old_symbol_name.toUpperCase() !== -1)
+                    && symbol.name().toUpperCase().includes(old_symbol_name.toUpperCase())
                 ) {
 
                     return symbol;
