@@ -446,7 +446,7 @@ exports['default'] = function (context) {
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ', break_point);
         var artboard_layers = Array.from(artboard.layers());
-        if (selected_layers.length >= 0) {
+        if (selected_layers.length > 0) {
             selected_layers.forEach(function (layer) {
                 // only act on the layer if it is selected AND its in the artboard we're in right now
                 // this sucks...n^2 loop
@@ -856,7 +856,7 @@ var StacksWell = function () {
                         pieces.pop();
                         var old_symbol_name = pieces.join('/');
 
-                        if (symbol.name().toUpperCase().split('/').indexOf(label.toUpperCase()) !== -1 && symbol.name().toUpperCase().split('/').indexOf(old_symbol_name.toUpperCase())) {
+                        if (symbol.name().toUpperCase().split('/').indexOf(label.toUpperCase()) !== -1 && symbol.name().toUpperCase().split('/').indexOf(old_symbol_name.toUpperCase() !== -1)) {
 
                             return symbol;
                         }

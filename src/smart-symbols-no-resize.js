@@ -47,7 +47,7 @@ export default function (context) {
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ' , break_point); 
         var artboard_layers = Array.from(artboard.layers());
-        if (selected_layers.length >= 0) {
+        if (selected_layers.length > 0) {
             selected_layers.forEach(function (layer) {
                 // only act on the layer if it is selected AND its in the artboard we're in right now
                 // this sucks...n^2 loop

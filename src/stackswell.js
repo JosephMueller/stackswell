@@ -111,7 +111,7 @@ class StacksWell
                 var old_symbol_name = pieces.join('/');
 
                 if (symbol.name().toUpperCase().split('/').indexOf(label.toUpperCase()) !== -1
-                    && symbol.name().toUpperCase().split('/').indexOf(old_symbol_name.toUpperCase())
+                    && symbol.name().toUpperCase().split('/').indexOf(old_symbol_name.toUpperCase() !== -1)
                 ) {
 
                     return symbol;
