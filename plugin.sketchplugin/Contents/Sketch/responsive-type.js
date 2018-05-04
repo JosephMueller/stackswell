@@ -784,7 +784,7 @@ var StacksWell = function () {
                 next_smaller = this.get_next_smaller_label(break_point);
                 if (next_smaller) {
                     console.log('Trying to find symbol for the next smaller size: ' + next_smaller);
-                    return this.get_symbol_for_breakpoint(next_smaller, old_symbol);
+                    return this.get_master_symbol_for_breakpoint(next_smaller, old_symbol);
                 }
             }
 
@@ -859,6 +859,15 @@ var StacksWell = function () {
             }
 
             return find_break_point_for_artboard;
+        }()
+    }, {
+        key: 'selected_layers',
+        get: function () {
+            function get() {
+                return Array.from(this.context.document.selectedLayers().layers());
+            }
+
+            return get;
         }()
     }, {
         key: 'avail_txt_styles',

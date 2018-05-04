@@ -367,8 +367,7 @@ exports['default'] = function (context) {
         var old_symbol_master = old_symbol.symbolMaster();
         console.log('Found symbol: ' + old_symbol_master);
 
-        var replacement = stacks_well.get_master_symbol_for_breakpoint(break_point, old_symbol_master),
-            replacement_frame = replacement.frame();
+        var replacement = stacks_well.get_master_symbol_for_breakpoint(break_point, old_symbol_master);
 
         if (replacement) {
             console.log('Replace with:' + replacement);
@@ -388,14 +387,25 @@ exports['default'] = function (context) {
         }
     }
 
+    var selected_layers = stacks_well.selected_layers;
     stacks_well.artboards.forEach(function (artboard) {
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ', break_point);
-        var artboards = Array.from(artboard.layers());
-
-        Array.from(artboard.layers()).forEach(function (layer) {
-            return act_on_layer(layer, break_point, stacks_well);
-        });
+        var artboard_layers = Array.from(artboard.layers());
+        if (selected_layers.length >= 0) {
+            selected_layers.forEach(function (layer) {
+                // only act on the layer if it is selected AND its in the artboard we're in right now
+                // this sucks...n^2 loop
+                if (artboard_layers.indexOf(layer) !== -1) {
+                    console.log('Layer ' + layer + ' is selected');
+                    act_on_layer(layer, break_point, stacks_well);
+                }
+            });
+        } else {
+            artboard_layers.forEach(function (layer) {
+                return act_on_layer(layer, break_point, stacks_well);
+            });
+        }
     });
 };
 
@@ -803,7 +813,7 @@ var StacksWell = function () {
                 next_smaller = this.get_next_smaller_label(break_point);
                 if (next_smaller) {
                     console.log('Trying to find symbol for the next smaller size: ' + next_smaller);
-                    return this.get_symbol_for_breakpoint(next_smaller, old_symbol);
+                    return this.get_master_symbol_for_breakpoint(next_smaller, old_symbol);
                 }
             }
 
@@ -878,6 +888,15 @@ var StacksWell = function () {
             }
 
             return find_break_point_for_artboard;
+        }()
+    }, {
+        key: 'selected_layers',
+        get: function () {
+            function get() {
+                return Array.from(this.context.document.selectedLayers().layers());
+            }
+
+            return get;
         }()
     }, {
         key: 'avail_txt_styles',
