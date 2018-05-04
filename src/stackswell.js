@@ -6,7 +6,9 @@ class StacksWell
         this.context = options.context;
         this.style_map = {};
     }
-
+    get selected_layers() {
+        return Array.from(this.context.document.selectedLayers().layers())
+    }
     get avail_txt_styles() {
         var self = this;
         return Array.from(this.context
@@ -121,7 +123,7 @@ class StacksWell
         next_smaller = this.get_next_smaller_label(break_point); 
         if (next_smaller) { 
             console.log('Trying to find symbol for the next smaller size: '+next_smaller);
-            return this.get_symbol_for_breakpoint(next_smaller, old_symbol);
+            return this.get_master_symbol_for_breakpoint(next_smaller, old_symbol);
         } 
     }
 

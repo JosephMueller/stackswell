@@ -20,14 +20,14 @@ export default function (context) {
         context: context
     }).init();
 
-    function smart_symbol(old_symbol, break_point, stacks_well) {
+    function smart_symbol(old_symbol, break_point, stacks_well) { 
         var old_symbol_master = old_symbol.symbolMaster();
         console.log('Found symbol: '+old_symbol_master);
 
-        var replacement = stacks_well.get_master_symbol_for_breakpoint(break_point, old_symbol_master),
-            replacement_frame = replacement.frame();
-
+        var replacement = stacks_well.get_master_symbol_for_breakpoint(break_point, old_symbol_master);
+        console.log(replacement);
         if (replacement) {
+            var replacement_frame = replacement.frame();
             console.log('Replace with:'+replacement);
             old_symbol.changeInstanceToSymbol(replacement);
             // after changing the old_symbol to the requested master
@@ -47,6 +47,8 @@ export default function (context) {
         } else if (layer.class() == "MSLayerGroup") {
             Array.from(layer.layers()).forEach(layer => act_on_layer(layer, break_point, stacks_well));
             apply_group_frame_bugfix(layer, stacks_well);
+        } else {
+            console.log('unknown class ' + layer.class())
         }
     } 
 
@@ -95,12 +97,24 @@ export default function (context) {
             }); 
 
     }
+    
 
+    var selected_layers = stacks_well.selected_layers;    
     stacks_well.artboards.forEach(function(artboard){
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
-        console.log('Break point: ' , break_point);
-
-        Array.from(artboard.layers()).
-            forEach(layer => act_on_layer(layer, break_point, stacks_well));
+        console.log('Break point: ' , break_point); 
+        var artboard_layers = Array.from(artboard.layers());
+        if (selected_layers.length >= 0) {
+            selected_layers.forEach(function (layer) {
+                // only act on the layer if it is selected AND its in the artboard we're in right now
+                // this sucks...n^2 loop
+                if (artboard_layers.indexOf(layer) !== -1) {
+                    console.log('Layer '+layer+' is selected');
+                    act_on_layer(layer, break_point, stacks_well);
+                }
+            });
+        } else {
+            artboard_layers.forEach(layer => act_on_layer(layer, break_point, stacks_well));
+        }
     });
 }
