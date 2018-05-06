@@ -51,7 +51,7 @@ export default function (context) {
             selected_layers.forEach(function (layer) {
                 // only act on the layer if it is selected AND its in the artboard we're in right now
                 // this sucks...n^2 loop
-                if (artboard_layers.indexOf(layer) !== -1) {
+                if (stacks_well.in_artboard(artboard_layers, layer)) {
                     console.log('Layer '+layer+' is selected');
                     act_on_layer(layer, break_point, stacks_well);
                 }

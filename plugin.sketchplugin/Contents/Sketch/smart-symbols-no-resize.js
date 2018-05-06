@@ -396,7 +396,7 @@ exports['default'] = function (context) {
             selected_layers.forEach(function (layer) {
                 // only act on the layer if it is selected AND its in the artboard we're in right now
                 // this sucks...n^2 loop
-                if (artboard_layers.indexOf(layer) !== -1) {
+                if (stacks_well.in_artboard(artboard_layers, layer)) {
                     console.log('Layer ' + layer + ' is selected');
                     act_on_layer(layer, break_point, stacks_well);
                 }
@@ -893,6 +893,29 @@ var StacksWell = function () {
             }
 
             return find_break_point_for_artboard;
+        }()
+    }, {
+        key: 'in_artboard',
+        value: function () {
+            function in_artboard(artboard_layers, layer) {
+                if (artboard_layers.indexOf(layer) !== -1) {
+                    return true;
+                }
+
+                var artboard_groups = artboard_layers.filter(function (symbol) {
+                    return symbol['class']() == 'MSLayerGroup';
+                });
+
+                for (var i = 0; i < artboard_groups.length; i++) {
+                    var group = artboard_groups[i];
+                    if (Array.from(group.layers()).indexOf(layer) !== -1) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            return in_artboard;
         }()
     }, {
         key: 'selected_layers',

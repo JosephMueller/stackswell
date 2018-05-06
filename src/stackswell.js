@@ -179,6 +179,22 @@ class StacksWell
         
         return this.labels[found];
     }
+
+    in_artboard(artboard_layers, layer) {
+        if (artboard_layers.indexOf(layer) !== -1) {
+            return true;
+        }
+
+        var artboard_groups = artboard_layers.filter(symbol => symbol.class() == 'MSLayerGroup');
+
+        for (var i = 0; i < artboard_groups.length; i++) {
+            var group = artboard_groups[i];
+            if (Array.from(group.layers()).indexOf(layer) !== -1) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 export {StacksWell as default}
