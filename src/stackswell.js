@@ -5,6 +5,7 @@ class StacksWell
         this.break_points = options.break_points;
         this.context = options.context;
         this.style_map = {};
+        this.librariesController = AppController.sharedInstance().librariesController();
     }
     get selected_layers() {
         return Array.from(this.context.document.selectedLayers().layers())
@@ -99,8 +100,13 @@ class StacksWell
     }
 
     get_master_symbol_for_breakpoint(break_point, old_symbol) {
-        var avail_symbols = this.avail_symbols;
-        for (var j = 0; j < break_point.length; j++) {
+        // check if the symbol is part of a library, 
+        //  and if it is, use the library symbols as choices for replacement
+        var library = this.librariesController.libraryForShareableObject(old_symbol);
+        console.log('Has library? '+library);
+        var avail_symbols = library ? library.document().localSymbols() : this.avail_symbols;
+
+        for (var j = 0; j < break_point.length; j++) { 
             for (var i = 0; i < avail_symbols.length; i++) {
                 var symbol = avail_symbols[i],
                     label = break_point[j];
@@ -118,8 +124,7 @@ class StacksWell
                 if (symbol.name().toUpperCase().split('/').indexOf(label.toUpperCase()) !== -1
                     && symbol.name().toUpperCase().includes(old_symbol_name.toUpperCase())
                 ) {
-
-                    return symbol;
+                    return library ? this.context.document.localSymbolForSymbol_inLibrary(symbol, library) : symbol;
                 }
             }
         }
