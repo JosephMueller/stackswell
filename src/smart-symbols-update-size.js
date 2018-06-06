@@ -98,11 +98,14 @@ export default function (context) {
 
     }
 
-    var selected_layers = stacks_well.selected_layers;    
+    var selected_layers = stacks_well.selected_layers;  
+
     stacks_well.artboards.forEach(function(artboard){
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
         console.log('Break point: ' , break_point); 
+
         var artboard_layers = Array.from(artboard.layers());
+
         if (selected_layers.length > 0) {
             selected_layers.forEach(function (layer) {
                 // only act on the layer if it is selected AND its in the artboard we're in right now
@@ -116,4 +119,5 @@ export default function (context) {
             artboard_layers.forEach(layer => act_on_layer(layer, break_point, stacks_well));
         }
     });
+
 }

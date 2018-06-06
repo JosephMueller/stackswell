@@ -84,7 +84,7 @@ class StacksWell
             }
         }
         console.log('No style found for break point & style '+ label + ' ' + style);
-        next_smaller = this.get_next_smaller_label(label)
+        var next_smaller = this.get_next_smaller_label(label);
         if (next_smaller) {
             console.log('Trying a smaller style to use: '+ next_smaller);
             return this.get_style_from_label_and_style(next_smaller, style);
@@ -130,7 +130,7 @@ class StacksWell
         }
 
         console.log('No symbol found for break point ' + break_point);
-        next_smaller = this.get_next_smaller_label(break_point); 
+        var next_smaller = this.get_next_smaller_label(break_point); 
         if (next_smaller) { 
             console.log('Trying to find symbol for the next smaller size: '+next_smaller);
             return this.get_master_symbol_for_breakpoint(next_smaller, old_symbol);
