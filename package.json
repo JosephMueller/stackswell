@@ -19,10 +19,7 @@
     "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {
-    "@skpm/builder": "^0.4.0"
+    "@skpm/builder": "^0.5.2"
   },
-  "author": "Joseph Mueller <hi@stackswell.io>",
-  "dependencies": {
-    "npm": "^5.7.1"
-  }
+  "author": "Joseph Mueller <hi@stackswell.io>"
 }
