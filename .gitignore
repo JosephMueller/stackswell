@@ -11,3 +11,6 @@ npm-debug.log
 
 # personal
 src/notes
+
+# src maps
+*.map
