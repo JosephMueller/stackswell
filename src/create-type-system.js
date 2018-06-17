@@ -34,7 +34,6 @@ function createLabel(view, settings) {
 function createDropdown(view, settings) {
 	// Creating the input
 	var popup = NSPopUpButton.alloc();
-	console.log(popup);
 
 	var dropdown = popup.initWithFrame(NSMakeRect(
 		settings.x,
@@ -88,8 +87,9 @@ function dialog(context) {
 	alert.setMessageText("Create type system");
 
 	// Creating dialog buttons
+	alert.addButtonWithTitle("Cancel");
 	alert.addButtonWithTitle("Generate System");
-	// alert.addButtonWithTitle("Cancel"); // TODO how to close
+	
 
 	// Creating the view
 	var viewWidth = 1000; // the width of the modal
@@ -350,13 +350,67 @@ function dialog(context) {
 	createLabel(view, naming_convention.label);
 	return alert;
 }
+
+function handle_sumbit (response, context) {
+	if (response == '1001') {
+		console.log('Generate Type System');
+		var selected_layers = Array.from(context.document.selectedLayers().layers());
+		console.log(selected_layers);
+		if (selected_layers.length === 0) {
+			console.log('Nothing to do ');
+			return
+		}
+		var current_layer = selected_layers[0];
+		if (current_layer.class() != "MSTextLayer") {
+			console.log('Wrong layer type selected');
+			return;
+		}
+		var new_layer = current_layer.copy();
+		var current_layer_parent = current_layer.parentGroup();
+
+
+		new_layer.setFontSize(25);
+		console.log(new_layer.frame().y + 50);
+		new_layer.frame().setY(new_layer.frame().y + 50);
+		current_layer_parent.insertLayers_afterLayer([new_layer], current_layer);
+		
+		
+
+
+		// // console.log(current_layer);
+		// var Text = require('sketch/dom').Text;
+		// var Rectangle = require('sketch/dom').Rectangle;
+
+		// var text = new Text({
+		// 	frame: new Rectangle(50, 50, 100, 100),
+		// 	text: 'Generate Type System',
+		// 	alignment: Text.Alignment.center,
+		// });
+		// // text.adjustToFit();
+		// console.log(text);
+		// var documentData = context.document.documentData();
+		// var currentParentGroup = documentData.currentPage().currentArtboard() || documentData.currentPage();
+		// console.log(currentParentGroup.addLayers([text]));
+		// console.log(currentParentGroup.parentGroup().addLayers);
+		// currentParentGroup.addLayers([text]);
+		// current_layer.parentGroup().insertLayers_beforeLayer_([text], current_layer);
+		// layer.parentGroup().insertLayers_beforeLayer_([group],layer);
+		// console.log(text);
+	}
+	else if (response == '1001') {
+		consoole.log('Cancel');
+	} else {
+		console.log('Unhandled response');
+		console.log(response);
+	}
+}
+
 export default function (context) {
-	console.log('works 2');
 	var options = ['Sketch'];
 	var app = NSApplication.sharedApplication();
 	var doc = context.document;
 	// app.displayDialog_withTitle("This is an alert box!", "Alert Box Title");
 	// var result = doc.askForUserInput_initialValue("How many copies do you want?", "10");
 	// console.log(result);
-	dialog(context).runModal();
+	handle_sumbit(dialog(context).runModal(), context);
 }
