@@ -227,7 +227,7 @@ function create_dialog(context) {
 
   var viewWidth = 1000; // the width of the modal
 
-  var viewHeight = 500; // the height of the modal
+  var viewHeight = 100; // the height of the modal
 
   var viewLineHeight = 25; // the height of each line in the modal
   // keep current line state
@@ -264,85 +264,89 @@ function create_dialog(context) {
       fontSize: 12,
       message: "Line Height"
     }
-  };
-  viewLine = viewSpacer.nextLine();
-  var paragraph_spacing = {
-    x: 150,
-    y: viewLine,
-    width: 190,
-    height: viewLineHeight,
-    initValue: 1.333,
-    label: {
-      x: 0,
-      y: viewLine,
-      width: 190,
-      height: viewLineHeight,
-      fontSize: 12,
-      message: "Paragraph Spacing"
-    }
-  };
-  viewLine = viewSpacer.nextLine();
-  var alignment_checkboxes = {
-    checkBoxes: [{
-      x: 110,
-      y: viewLine,
-      width: 50,
-      height: viewLineHeight,
-      message: "Left"
-    }, {
-      x: 160,
-      y: viewLine,
-      width: 50,
-      height: viewLineHeight,
-      message: "Center"
-    }, {
-      x: 210,
-      y: viewLine,
-      width: 50,
-      height: viewLineHeight,
-      message: "Right"
-    }],
-    label: {
-      x: 0,
-      y: viewLine,
-      width: 100,
-      height: viewLineHeight,
-      fontSize: 12,
-      message: "Alignment"
-    }
-  };
-  viewLine = viewSpacer.nextLine();
-  var text_color_1 = {
-    x: 150,
-    y: viewLine,
-    width: 190,
-    height: viewLineHeight,
-    initValue: "#00000",
-    label: {
-      x: 0,
-      y: viewLine,
-      width: 190,
-      height: viewLineHeight,
-      fontSize: 12,
-      message: "Text Color 1"
-    }
-  };
-  viewLine = viewSpacer.nextLine();
-  var text_color_2 = {
-    x: 150,
-    y: viewLine,
-    width: 190,
-    height: viewLineHeight,
-    initValue: "#FF6966",
-    label: {
-      x: 0,
-      y: viewLine,
-      width: 190,
-      height: viewLineHeight,
-      fontSize: 12,
-      message: "Text Color 2"
-    }
-  };
+  }; // viewLine = viewSpacer.nextLine();
+  // var paragraph_spacing = {
+  // 	x: 150,
+  // 	y: viewLine,
+  // 	width: 190,
+  // 	height: viewLineHeight,
+  // 	initValue: 1.333,
+  // 	label: {
+  // 		x: 0,
+  // 		y: viewLine,
+  // 		width: 190,
+  // 		height: viewLineHeight,
+  // 		fontSize: 12,
+  // 		message: "Paragraph Spacing"
+  // 	}
+  // };
+  // viewLine = viewSpacer.nextLine();
+  // var alignment_checkboxes = {
+  // 	checkBoxes: [
+  // 		{
+  // 			x: 110,
+  // 			y: viewLine,
+  // 			width: 50,
+  // 			height: viewLineHeight,
+  // 			message: "Left"
+  // 		},
+  // 		{
+  // 			x: 160,
+  // 			y: viewLine,
+  // 			width: 50,
+  // 			height: viewLineHeight,
+  // 			message: "Center"
+  // 		},
+  // 					{
+  // 			x: 210,
+  // 			y: viewLine,
+  // 			width: 50,
+  // 			height: viewLineHeight,
+  // 			message: "Right"
+  // 		}
+  // 	],
+  // 	label: {
+  // 		x: 0,
+  // 		y: viewLine,
+  // 		width: 100,
+  // 		height: viewLineHeight,
+  // 		fontSize: 12,
+  // 		message: "Alignment"
+  // 	}
+  // };
+  // viewLine = viewSpacer.nextLine();
+  // var text_color_1 = {
+  // 	x: 150,
+  // 	y: viewLine,
+  // 	width: 190,
+  // 	height: viewLineHeight,
+  // 	initValue: "#00000",
+  // 	label: {
+  // 		x: 0,
+  // 		y: viewLine,
+  // 		width: 190,
+  // 		height: viewLineHeight,
+  // 		fontSize: 12,
+  // 		message: "Text Color 1"
+  // 	}
+  // };
+  // viewLine = viewSpacer.nextLine();
+  // var text_color_2 = {
+  // 	x: 150,
+  // 	y: viewLine,
+  // 	width: 190,
+  // 	height: viewLineHeight,
+  // 	initValue: "#FF6966",
+  // 	label: {
+  // 		x: 0,
+  // 		y: viewLine,
+  // 		width: 190,
+  // 		height: viewLineHeight,
+  // 		fontSize: 12,
+  // 		message: "Text Color 2"
+  // 	}
+  // };
+
   viewLine = viewSpacer.nextLine();
   var breakpoint_scale = {
     x: 100,
@@ -358,103 +362,159 @@ function create_dialog(context) {
       fontSize: 12,
       message: "Breakpoint Scale"
     }
-  };
-  viewLine = viewSpacer.nextLine();
-  var breakpoint_checkboxes = {
-    checkBoxes: [{
-      x: 75,
-      y: viewLine,
-      width: 50,
-      height: viewLineHeight,
-      message: "XS"
-    }, {
-      x: 125,
-      y: viewLine,
-      width: 50,
-      height: viewLineHeight,
-      message: "SM"
-    }, {
-      x: 175,
-      y: viewLine,
-      width: 50,
-      height: viewLineHeight,
-      message: "MD"
-    }, {
-      x: 225,
-      y: viewLine,
-      width: 50,
-      height: viewLineHeight,
-      message: "LG"
-    }, {
-      x: 275,
-      y: viewLine,
-      width: 50,
-      height: viewLineHeight,
-      message: "XL"
-    }],
-    label: {
-      x: 0,
-      y: viewLine,
-      width: 75,
-      height: viewLineHeight,
-      fontSize: 12,
-      message: "Breakpoints"
-    }
-  };
-  viewLine = viewSpacer.nextLine();
-  var naming_convention = {
-    x: 80,
-    y: viewLine,
-    width: 300,
-    height: viewLineHeight,
-    initValue: "Type Face/Color/Alignment",
-    label: {
-      x: 0,
-      y: viewLine,
-      width: 75,
-      height: viewLineHeight,
-      message: "BkPt/H#/"
-    }
-  };
+  }; // viewLine = viewSpacer.nextLine();
+  // var breakpoint_checkboxes = {
+  // 	checkBoxes: [
+  // 		{
+  // 			x: 75,
+  // 			y: viewLine,
+  // 			width: 50,
+  // 			height: viewLineHeight,
+  // 			message: "XS"
+  // 		},
+  // 		{
+  // 			x: 125,
+  // 			y: viewLine,
+  // 			width: 50,
+  // 			height: viewLineHeight,
+  // 			message: "SM"
+  // 		},
+  // 					{
+  // 			x: 175,
+  // 			y: viewLine,
+  // 			width: 50,
+  // 			height: viewLineHeight,
+  // 			message: "MD"
+  // 		},
+  // 		{
+  // 			x: 225,
+  // 			y: viewLine,
+  // 			width: 50,
+  // 			height: viewLineHeight,
+  // 			message: "LG"
+  // 		},
+  // 					{
+  // 			x: 275,
+  // 			y: viewLine,
+  // 			width: 50,
+  // 			height: viewLineHeight,
+  // 			message: "XL"
+  // 		}
+  // 	],
+  // 	label: {
+  // 		x: 0,
+  // 		y: viewLine,
+  // 		width: 75,
+  // 		height: viewLineHeight,
+  // 		fontSize: 12,
+  // 		message: "Breakpoints"
+  // 	}
+  // };
+  // viewLine = viewSpacer.nextLine();
+  // var naming_convention = {
+  // 	x: 80,
+  // 	y: viewLine,
+  // 	width: 300,
+  // 	height: viewLineHeight,
+  // 	initValue: "Type Face/Color/Alignment",
+  // 	label: {
+  // 		x: 0,
+  // 		y: viewLine,
+  // 		width: 75,
+  // 		height: viewLineHeight,
+  // 		message: "BkPt/H#/"
+  // 	}
+  // };
+
   var view = NSView.alloc().initWithFrame(NSMakeRect(0, 0, viewWidth, viewHeight));
   alert.addAccessoryView(view);
   var model = new Model();
   model.addProp('type_scale', createDropdown(view, type_scale));
   createLabel(view, type_scale.label);
   model.addProp('line_height', createTextField(view, line_height));
-  createLabel(view, line_height.label);
-  model.addProp('paragraph_spacing', createTextField(view, paragraph_spacing));
-  createLabel(view, paragraph_spacing.label);
-  alignment_checkboxes.checkBoxes.forEach(function (checkbox) {
-    return model.addPropArray('alignments', createCheckBox(view, checkbox));
-  });
-  createLabel(view, alignment_checkboxes.label);
-  model.addProp('text_color_1', createTextField(view, text_color_1));
-  createLabel(view, text_color_1.label);
-  model.addProp('text_color_2', createTextField(view, text_color_2));
-  createLabel(view, text_color_2.label);
+  createLabel(view, line_height.label); // model.addProp('paragraph_spacing', createTextField(view, paragraph_spacing));
+  // createLabel(view, paragraph_spacing.label);
+  // alignment_checkboxes.checkBoxes.forEach(checkbox => model.addPropArray('alignments',createCheckBox(view, checkbox)));
+  // createLabel(view, alignment_checkboxes.label);
+  // model.addProp('text_color_1', createTextField(view, text_color_1));
+  // createLabel(view, text_color_1.label);
+  // model.addProp('text_color_2', createTextField(view, text_color_2));
+  // createLabel(view, text_color_2.label);
+
   model.addProp('breakpoint_scale', createDropdown(view, breakpoint_scale));
-  createLabel(view, breakpoint_scale.label);
-  breakpoint_checkboxes.checkBoxes.forEach(function (checkbox) {
-    return model.addPropArray('breakpoints', createCheckBox(view, checkbox));
-  });
-  createLabel(view, breakpoint_checkboxes.label);
-  model.addProp('naming_convention', createTextField(view, naming_convention));
-  createLabel(view, naming_convention.label);
+  createLabel(view, breakpoint_scale.label); // breakpoint_checkboxes.checkBoxes.forEach(checkbox => model.addPropArray('breakpoints', createCheckBox(view, checkbox)));
+  // createLabel(view, breakpoint_checkboxes.label);
+  // model.addProp('naming_convention', createTextField(view, naming_convention));
+  // createLabel(view, naming_convention.label);
+
   return {
     alert: alert,
     model: model
   };
 }
+/**
+ * options: {
+	current_layer:,
+	lh,
+	x,
+	y,
+	fs,
+	style_name,
+	replace_text_with
+ }
+ */
+
+
+function create_text_and_style(options) {
+  var new_layer = options.current_layer.copy(); // setup the line height 
+  // TODO is this supposed to go into the style?
+  // new_layer.setLineHeight(options.lh);
+  // new_layer.setTextAlignment(options.alignment);
+  // setup the frame
+
+  new_layer.frame().setY(options.y);
+  new_layer.frame().setX(options.x); // get the current style & attributes
+
+  var current_text_style = options.current_layer.style().textStyle(),
+      current_attributes = current_text_style.attributes(),
+      new_para_style = NSMutableParagraphStyle.alloc().init(); // set the paragraph properties
+
+  new_para_style.setParagraphStyle(current_attributes.NSParagraphStyle);
+  console.log(new_para_style.lineSpacing());
+  new_para_style.lineSpacing = options.lh;
+  new_para_style.alignment = options.alignment_i;
+  console.log(new_para_style.lineSpacing()); // create a new text style
+
+  var textStyleAttributes = {
+    // NSColor.colorWithRed_green_blue_alpha(1,0,0,1)
+    'NSColor': current_attributes.MSAttributedStringColorAttribute.NSColorWithColorSpace(null),
+    'NSFont': NSFont.fontWithName_size_(options.current_layer.font().fontName(), options.fs),
+    'NSParagraphStyle': new_para_style
+  };
+  var textStyle = MSTextStyle.styleWithAttributes_(textStyleAttributes); // console.log(textStyleAttributes.NSColor.hexValue());
+  // add the text style to a style
+
+  var style = MSStyle.alloc().init();
+  style.setTextStyle_(textStyle); // add the style to shared style
+
+  var ss = MSSharedStyle.alloc().initWithName_firstInstance(options.style_name.replace('COLOR', '#' + textStyleAttributes.NSColor.hexValue()), style);
+  context.document.documentData().layerTextStyles().addSharedObject(ss); // TODO can cache upto .layerTextStyles()
+
+  new_layer.setStyle(style);
+  new_layer.replaceTextPreservingAttributeRanges(options.replace_text_with.replace('COLOR', '#' + textStyleAttributes.NSColor.hexValue()));
+  return new_layer;
+}
 
 function handle_sumbit(dialog, context) {
   var response = dialog.alert.runModal();
 
+  var Text = __webpack_require__(/*! sketch/dom */ "sketch/dom").Text;
+
   if (response == '1001') {
     console.log('Generate Type System');
     console.log('Type Scale: ' + dialog.model.get('type_scale'));
-    console.log('Line Height: ' + dialog.model.get('line_height'));
-    console.log('Paragraph Spacing: ' + dialog.model.get('paragraph_spacing'));
+    console.log('Line Height: ' + dialog.model.get('line_height')); // console.log('Paragraph Spacing: '+ dialog.model.get('paragraph_spacing'));
+
     var selected_layers = Array.from(context.document.selectedLayers().layers());
 
     if (selected_layers.length === 0) {
@@ -474,36 +534,66 @@ function handle_sumbit(dialog, context) {
         lh = current_layer.lineHeight(),
         ts = parseFloat(dialog.model.get('type_scale')),
         ls = parseFloat(dialog.model.get('line_height')),
-        y = current_layer.frame().y();
+        bs = parseFloat(dialog.model.get('breakpoint_scale')),
+        y = current_layer.frame().y(),
+        x = current_layer.frame().x();
+    var current_text_style = current_layer.style().textStyle(),
+        current_attributes = current_text_style.attributes();
+    var new_layers = [];
+    var break_points = ['XS', 'SM', 'MD', 'LG', '.XL'];
+    var header_tags = ['P', 'H6', 'H5', 'H4', 'H3', 'H2', 'H1'];
+    var alignments = ['Left', // 0
+    'Center', // 2
+    'Right' // 1
+    ];
+    var alignment_is = [0, 2, 1]; // start off by 1
+    // TODO also delete the original selected text layer
 
-    for (var i = 0; i < 5; i++) {
-      var new_layer = current_layer.copy();
-      fs *= ts;
-      lh *= lh;
-      y += fs + lh + 25;
-      new_layer.setFontSize(fs);
-      new_layer.setLineHeight(lh);
-      new_layer.frame().setY(y);
-      current_layer_parent.insertLayers_afterLayer([new_layer], current_layer);
-    } // // console.log(current_layer);
-    // var Text = require('sketch/dom').Text;
-    // var Rectangle = require('sketch/dom').Rectangle;
-    // var text = new Text({
-    // 	frame: new Rectangle(50, 50, 100, 100),
-    // 	text: 'Generate Type System',
-    // 	alignment: Text.Alignment.center,
-    // });
-    // // text.adjustToFit();
-    // console.log(text);
-    // var documentData = context.document.documentData();
-    // var currentParentGroup = documentData.currentPage().currentArtboard() || documentData.currentPage();
-    // console.log(currentParentGroup.addLayers([text]));
-    // console.log(currentParentGroup.parentGroup().addLayers);
-    // currentParentGroup.addLayers([text]);
-    // current_layer.parentGroup().insertLayers_beforeLayer_([text], current_layer);
-    // layer.parentGroup().insertLayers_beforeLayer_([group],layer);
-    // console.log(text);
+    fs /= ts * bs;
+    lh /= ls;
+    break_points.forEach(function (column, column_i) {
+      fs *= bs;
+      var current_fs = fs;
+      header_tags.forEach(function (header_tag, header_tag_i) {
+        current_fs *= ts;
+        lh = Math.round(ls * current_fs);
+        y += current_fs + lh + 25; // start off by 1
 
+        var nx = x;
+        alignments.forEach(function (alignment, alignment_i) {
+          var name = "".concat(column, "/").concat(header_tag, "/COLOR/").concat(alignment);
+          new_layers.push(create_text_and_style({
+            current_layer: current_layer,
+            lh: lh,
+            x: nx,
+            y: y,
+            fs: Math.round(current_fs),
+            style_name: name,
+            replace_text_with: name,
+            alignment_i: alignment_is[alignment_i],
+            alignment: alignment.toLowerCase()
+          }));
+          nx += 450 * break_points.length;
+        });
+      });
+      y += 100;
+    }); // for (var i = 0; i < 5; i++) {
+    // 	fs *= ts;
+    // 	lh *= ls; 
+    // 	y += fs + lh + 25;
+    // 	new_layers.push(create_text_and_style({
+    // 		current_layer : current_layer,
+    // 		lh: lh,
+    // 		x: x,
+    // 		y: y,
+    // 		fs: fs,
+    // 		style_name: 'my/text/style/'+i,
+    // 		replace_text_with: '1234123412341243'+i,
+    // 		alignment: 3
+    // 	}));
+    // }
+
+    current_layer_parent.insertLayers_afterLayer(new_layers, current_layer);
   } else if (response == '1001') {
     consoole.log('Cancel');
   } else {
@@ -775,6 +865,17 @@ function () {
 }();
 
 
+
+/***/ }),
+
+/***/ "sketch/dom":
+/*!*****************************!*\
+  !*** external "sketch/dom" ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("sketch/dom");
 
 /***/ })
 
