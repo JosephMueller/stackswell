@@ -11,6 +11,8 @@ function createTextField(view, settings) {
 	textField.setStringValue(settings.initValue);
 
 	view.addSubview(textField);
+
+	return textField;
 }
 
 function createLabel(view, settings) {
@@ -29,6 +31,8 @@ function createLabel(view, settings) {
     // label.setFont(NSFont.systemFontOfSize_(fontSize));
     label.setStringValue(settings.message);
     view.addSubview(label);
+
+    return label;
 }
 
 function createDropdown(view, settings) {
@@ -46,6 +50,8 @@ function createDropdown(view, settings) {
 
 	// Adding the PopUpButton to the dialog
 	view.addSubview(dropdown);
+
+	return dropdown;
 }
 
 function createCheckBox(view, settings) {
@@ -64,6 +70,8 @@ function createCheckBox(view, settings) {
 	checkbox.setState(NSOffState);
 
 	view.addSubview(checkbox);
+
+	return checkbox;
 }
 
 class Spacer {
@@ -80,7 +88,36 @@ class Spacer {
 	}
 }
 
-function dialog(context) {
+class Model {
+	constructor() {
+		this.properties = {};
+	}
+
+	addProp(name, value) {
+		this.properties[name] = value;
+	}
+
+	addPropArray(name, value) {
+		if(!(name in this.properties)) {
+			this.properties[name] = [];
+		}
+		this.properties[name].push(value);
+	}
+
+	get (value) {
+		var prop = this.properties[value];
+		var prop_type = prop.class();
+		if (prop_type == 'NSPopUpButton') {
+			return prop.titleOfSelectedItem();
+		} else if (prop_type == 'NSTextField') {
+			return prop.stringValue();
+		} else {
+			console.log('unknown prop type '+prop_type);
+		}
+	}
+}
+
+function create_dialog(context) {
 	var alert = COSAlertWindow.new();
 
 	alert.setIcon(NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon2x.png").path()));
@@ -93,7 +130,7 @@ function dialog(context) {
 
 	// Creating the view
 	var viewWidth = 1000; // the width of the modal
-	var viewHeight = 300; // the height of the modal
+	var viewHeight = 500; // the height of the modal
 	var viewLineHeight = 25; // the height of each line in the modal
 
 
@@ -230,7 +267,7 @@ function dialog(context) {
 	};
 
 	viewLine = viewSpacer.nextLine();
-	var type_scale = {
+	var breakpoint_scale = {
 		x: 100,
 		y: viewLine,
 		width: 190,
@@ -324,40 +361,54 @@ function dialog(context) {
 
 	var view = NSView.alloc().initWithFrame(NSMakeRect(0, 0, viewWidth, viewHeight));
 	alert.addAccessoryView(view);
+	var model = new Model();
 
-	createDropdown(view, type_scale);
+	model.addProp('type_scale', createDropdown(view, type_scale));
 	createLabel(view, type_scale.label);
 		
-	createTextField(view, line_height)
+	model.addProp('line_height', createTextField(view, line_height));
 	createLabel(view, line_height.label);
 
-	createTextField(view, paragraph_spacing);
+	model.addProp('paragraph_spacing', createTextField(view, paragraph_spacing));
 	createLabel(view, paragraph_spacing.label);
 
-	alignment_checkboxes.checkBoxes.forEach(checkbox => createCheckBox(view, checkbox));
+	alignment_checkboxes.checkBoxes.forEach(checkbox => model.addPropArray('alignments',createCheckBox(view, checkbox)));
 	createLabel(view, alignment_checkboxes.label);
 
-	createTextField(view, text_color_1);
+	model.addProp('text_color_1', createTextField(view, text_color_1));
 	createLabel(view, text_color_1.label);
 
-	createTextField(view, text_color_2);
+	model.addProp('text_color_2', createTextField(view, text_color_2));
 	createLabel(view, text_color_2.label);
 
-	breakpoint_checkboxes.checkBoxes.forEach(checkbox => createCheckBox(view, checkbox));
+	model.addProp('breakpoint_scale', createDropdown(view, breakpoint_scale));
+	createLabel(view, breakpoint_scale.label);
+
+	breakpoint_checkboxes.checkBoxes.forEach(checkbox => model.addPropArray('breakpoints', createCheckBox(view, checkbox)));
 	createLabel(view, breakpoint_checkboxes.label);
 
-	createTextField(view, naming_convention);
+	model.addProp('naming_convention', createTextField(view, naming_convention));
 	createLabel(view, naming_convention.label);
-	return alert;
+	
+	return {
+		alert : alert,
+		model : model
+	};
 }
 
-function handle_sumbit (response, context) {
+function handle_sumbit (dialog, context) {
+	var response = dialog.alert.runModal();
 	if (response == '1001') {
 		console.log('Generate Type System');
+		
+		console.log('Type Scale: '+dialog.model.get('type_scale'));
+		console.log('Line Height: '+ dialog.model.get('line_height'));
+		console.log('Paragraph Spacing: '+ dialog.model.get('paragraph_spacing'));
+		
 		var selected_layers = Array.from(context.document.selectedLayers().layers());
-		console.log(selected_layers);
+
 		if (selected_layers.length === 0) {
-			console.log('Nothing to do ');
+			console.log('No text area selected');
 			return
 		}
 		var current_layer = selected_layers[0];
@@ -365,14 +416,23 @@ function handle_sumbit (response, context) {
 			console.log('Wrong layer type selected');
 			return;
 		}
-		var new_layer = current_layer.copy();
+
 		var current_layer_parent = current_layer.parentGroup();
-
-
-		new_layer.setFontSize(25);
-		console.log(new_layer.frame().y + 50);
-		new_layer.frame().setY(new_layer.frame().y + 50);
-		current_layer_parent.insertLayers_afterLayer([new_layer], current_layer);
+		var fs = current_layer.fontSize(),
+			lh = current_layer.lineHeight(),
+			ts = parseFloat(dialog.model.get('type_scale')),
+			ls = parseFloat(dialog.model.get('line_height')),
+			y = current_layer.frame().y();
+		for (var i = 0; i < 5; i++) {
+			var new_layer = current_layer.copy();
+			fs *= ts;
+			lh *= lh; 
+			y += fs + lh + 25;
+			new_layer.setFontSize(fs);
+			new_layer.setLineHeight(lh);
+			new_layer.frame().setY(y);
+			current_layer_parent.insertLayers_afterLayer([new_layer], current_layer);
+		}
 		
 		
 
@@ -412,5 +472,5 @@ export default function (context) {
 	// app.displayDialog_withTitle("This is an alert box!", "Alert Box Title");
 	// var result = doc.askForUserInput_initialValue("How many copies do you want?", "10");
 	// console.log(result);
-	handle_sumbit(dialog(context).runModal(), context);
+	handle_sumbit(create_dialog(context), context);
 }

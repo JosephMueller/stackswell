@@ -113,6 +113,7 @@ function createTextField(view, settings) {
   var textField = NSTextField.alloc().initWithFrame(NSMakeRect(settings.x, settings.y, settings.width, settings.height));
   textField.setStringValue(settings.initValue);
   view.addSubview(textField);
+  return textField;
 }
 
 function createLabel(view, settings) {
@@ -125,6 +126,7 @@ function createLabel(view, settings) {
 
   label.setStringValue(settings.message);
   view.addSubview(label);
+  return label;
 }
 
 function createDropdown(view, settings) {
@@ -136,6 +138,7 @@ function createDropdown(view, settings) {
   }); // Adding the PopUpButton to the dialog
 
   view.addSubview(dropdown);
+  return dropdown;
 }
 
 function createCheckBox(view, settings) {
@@ -147,6 +150,7 @@ function createCheckBox(view, settings) {
   checkbox.setTitle(settings.message);
   checkbox.setState(NSOffState);
   view.addSubview(checkbox);
+  return checkbox;
 }
 
 var Spacer =
@@ -171,7 +175,49 @@ function () {
   return Spacer;
 }();
 
-function dialog(context) {
+var Model =
+/*#__PURE__*/
+function () {
+  function Model() {
+    _classCallCheck(this, Model);
+
+    this.properties = {};
+  }
+
+  _createClass(Model, [{
+    key: "addProp",
+    value: function addProp(name, value) {
+      this.properties[name] = value;
+    }
+  }, {
+    key: "addPropArray",
+    value: function addPropArray(name, value) {
+      if (!(name in this.properties)) {
+        this.properties[name] = [];
+      }
+
+      this.properties[name].push(value);
+    }
+  }, {
+    key: "get",
+    value: function get(value) {
+      var prop = this.properties[value];
+      var prop_type = prop.class();
+
+      if (prop_type == 'NSPopUpButton') {
+        return prop.titleOfSelectedItem();
+      } else if (prop_type == 'NSTextField') {
+        return prop.stringValue();
+      } else {
+        console.log('unknown prop type ' + prop_type);
+      }
+    }
+  }]);
+
+  return Model;
+}();
+
+function create_dialog(context) {
   var alert = COSAlertWindow.new();
   alert.setIcon(NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon2x.png").path()));
   alert.setMessageText("Create type system"); // Creating dialog buttons
@@ -181,7 +227,7 @@ function dialog(context) {
 
   var viewWidth = 1000; // the width of the modal
 
-  var viewHeight = 300; // the height of the modal
+  var viewHeight = 500; // the height of the modal
 
   var viewLineHeight = 25; // the height of each line in the modal
   // keep current line state
@@ -298,7 +344,7 @@ function dialog(context) {
     }
   };
   viewLine = viewSpacer.nextLine();
-  var type_scale = {
+  var breakpoint_scale = {
     x: 100,
     y: viewLine,
     width: 190,
@@ -372,37 +418,47 @@ function dialog(context) {
   };
   var view = NSView.alloc().initWithFrame(NSMakeRect(0, 0, viewWidth, viewHeight));
   alert.addAccessoryView(view);
-  createDropdown(view, type_scale);
+  var model = new Model();
+  model.addProp('type_scale', createDropdown(view, type_scale));
   createLabel(view, type_scale.label);
-  createTextField(view, line_height);
+  model.addProp('line_height', createTextField(view, line_height));
   createLabel(view, line_height.label);
-  createTextField(view, paragraph_spacing);
+  model.addProp('paragraph_spacing', createTextField(view, paragraph_spacing));
   createLabel(view, paragraph_spacing.label);
   alignment_checkboxes.checkBoxes.forEach(function (checkbox) {
-    return createCheckBox(view, checkbox);
+    return model.addPropArray('alignments', createCheckBox(view, checkbox));
   });
   createLabel(view, alignment_checkboxes.label);
-  createTextField(view, text_color_1);
+  model.addProp('text_color_1', createTextField(view, text_color_1));
   createLabel(view, text_color_1.label);
-  createTextField(view, text_color_2);
+  model.addProp('text_color_2', createTextField(view, text_color_2));
   createLabel(view, text_color_2.label);
+  model.addProp('breakpoint_scale', createDropdown(view, breakpoint_scale));
+  createLabel(view, breakpoint_scale.label);
   breakpoint_checkboxes.checkBoxes.forEach(function (checkbox) {
-    return createCheckBox(view, checkbox);
+    return model.addPropArray('breakpoints', createCheckBox(view, checkbox));
   });
   createLabel(view, breakpoint_checkboxes.label);
-  createTextField(view, naming_convention);
+  model.addProp('naming_convention', createTextField(view, naming_convention));
   createLabel(view, naming_convention.label);
-  return alert;
+  return {
+    alert: alert,
+    model: model
+  };
 }
 
-function handle_sumbit(response, context) {
+function handle_sumbit(dialog, context) {
+  var response = dialog.alert.runModal();
+
   if (response == '1001') {
     console.log('Generate Type System');
+    console.log('Type Scale: ' + dialog.model.get('type_scale'));
+    console.log('Line Height: ' + dialog.model.get('line_height'));
+    console.log('Paragraph Spacing: ' + dialog.model.get('paragraph_spacing'));
     var selected_layers = Array.from(context.document.selectedLayers().layers());
-    console.log(selected_layers);
 
     if (selected_layers.length === 0) {
-      console.log('Nothing to do ');
+      console.log('No text area selected');
       return;
     }
 
@@ -413,12 +469,23 @@ function handle_sumbit(response, context) {
       return;
     }
 
-    var new_layer = current_layer.copy();
     var current_layer_parent = current_layer.parentGroup();
-    new_layer.setFontSize(25);
-    console.log(new_layer.frame().y + 50);
-    new_layer.frame().setY(new_layer.frame().y + 50);
-    current_layer_parent.insertLayers_afterLayer([new_layer], current_layer); // // console.log(current_layer);
+    var fs = current_layer.fontSize(),
+        lh = current_layer.lineHeight(),
+        ts = parseFloat(dialog.model.get('type_scale')),
+        ls = parseFloat(dialog.model.get('line_height')),
+        y = current_layer.frame().y();
+
+    for (var i = 0; i < 5; i++) {
+      var new_layer = current_layer.copy();
+      fs *= ts;
+      lh *= lh;
+      y += fs + lh + 25;
+      new_layer.setFontSize(fs);
+      new_layer.setLineHeight(lh);
+      new_layer.frame().setY(y);
+      current_layer_parent.insertLayers_afterLayer([new_layer], current_layer);
+    } // // console.log(current_layer);
     // var Text = require('sketch/dom').Text;
     // var Rectangle = require('sketch/dom').Rectangle;
     // var text = new Text({
@@ -436,6 +503,7 @@ function handle_sumbit(response, context) {
     // current_layer.parentGroup().insertLayers_beforeLayer_([text], current_layer);
     // layer.parentGroup().insertLayers_beforeLayer_([group],layer);
     // console.log(text);
+
   } else if (response == '1001') {
     consoole.log('Cancel');
   } else {
@@ -451,7 +519,7 @@ function handle_sumbit(response, context) {
   // var result = doc.askForUserInput_initialValue("How many copies do you want?", "10");
   // console.log(result);
 
-  handle_sumbit(dialog(context).runModal(), context);
+  handle_sumbit(create_dialog(context), context);
 });
 
 /***/ }),
