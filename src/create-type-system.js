@@ -182,7 +182,7 @@ function create_dialog(context) {
 		label: {
 			x: 0,
 			y: viewLine,
-			width: 50,
+			width: 100,
 			height: viewLineHeight,
 			fontSize: 12,
 			message: "Line Height"
