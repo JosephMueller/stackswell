@@ -39,7 +39,7 @@
       }
     ]
   },
-  "version": "1.0.5",
+  "version": "1.0.6",
   "name": "Stackswell",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",
