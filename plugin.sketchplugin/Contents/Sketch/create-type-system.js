@@ -233,8 +233,8 @@ function create_dialog(context) {
   alert.setIcon(NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon2x.png").path()));
   alert.setMessageText("Create type system"); // Creating dialog buttons
 
-  alert.addButtonWithTitle("Cancel");
-  alert.addButtonWithTitle("Generate System"); // Creating the view
+  alert.addButtonWithTitle("Generate System");
+  alert.addButtonWithTitle("Cancel"); // Creating the view
 
   var viewWidth = 1200; // the width of the modal
 
@@ -534,7 +534,7 @@ function handle_sumbit(dialog, context) {
 
   var Text = __webpack_require__(/*! sketch/dom */ "sketch/dom").Text;
 
-  if (response == '1001') {
+  if (response == '1000') {
     console.log('Generate Type System');
     console.log('Type Scale: ' + dialog.model.get('type_scale'));
     console.log('Line Height: ' + dialog.model.get('line_height')); // console.log('Paragraph Spacing: '+ dialog.model.get('paragraph_spacing'));

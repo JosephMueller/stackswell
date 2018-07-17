@@ -133,8 +133,8 @@ function create_dialog(context) {
 	alert.setMessageText("Create type system");
 
 	// Creating dialog buttons
-	alert.addButtonWithTitle("Cancel");
 	alert.addButtonWithTitle("Generate System");
+	alert.addButtonWithTitle("Cancel");
 	
 
 	// Creating the view
@@ -489,7 +489,7 @@ function handle_sumbit (dialog, context) {
 	var response = dialog.alert.runModal();
 	var Text = require('sketch/dom').Text;
 
-	if (response == '1001') {
+	if (response == '1000') {
 		console.log('Generate Type System');
 		
 		console.log('Type Scale: '+dialog.model.get('type_scale'));
