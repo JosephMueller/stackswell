@@ -466,16 +466,21 @@ function create_dialog(context) {
   };
 }
 
-function reverse_layers_y(new_layers) {
+function reverse_layers_and_fix_x(new_layers, chosen_alignments) {
   // reorder layers so biggest layer is first
   // do this by keeping a map of the unique y positions for each break point
   // and swapping the y coordinate of each layer
   // hacky, but easier than reworking the fs/scale math
-  var ys = {};
+  // this function also repositions the layers horizontally
+  // adjusting for the max width of all the given layers
+  var ys = {},
+      max_width = 0;
   new_layers.forEach(function (layer) {
     var pieces = layer.stringValue().split('/'),
         current_bp = pieces[0],
-        current_y = layer.frame().y();
+        current_y = layer.frame().y(),
+        current_width = layer.frame().width(),
+        current_height = layer.frame().height();
 
     if (!(current_bp in ys)) {
       ys[current_bp] = [];
@@ -488,17 +493,25 @@ function reverse_layers_y(new_layers) {
         ys[current_bp].push(current_y);
       }
     }
+
+    if (current_width > max_width) {
+      max_width = current_width;
+    }
   });
 
   for (var y in ys) {
     ys[y] = ys[y].reverse();
   }
 
-  var previous_y, previous_bp, y_i;
+  var previous_y,
+      previous_bp,
+      y_i,
+      current_a = -1;
   new_layers.forEach(function (layer) {
     var pieces = layer.stringValue().split('/'),
         current_bp = pieces[0],
-        current_y = layer.frame().y();
+        current_y = layer.frame().y(),
+        current_height = layer.frame().height();
 
     if (previous_bp != current_bp) {
       y_i = -1;
@@ -511,6 +524,14 @@ function reverse_layers_y(new_layers) {
     }
 
     layer.frame().setY(ys[current_bp][y_i]);
+
+    if (current_a >= chosen_alignments.length - 1) {
+      current_a = -1;
+    }
+
+    current_a++; // console.log(layer.stringValue() + ' w: '+layer.frame().width()+' x:' + layer.frame().x() +' y:' + layer.frame().y() + ' ca:' + current_a+ ' nx:' + (layer.frame().x() + ((max_width) * current_a)));
+
+    layer.frame().setX(layer.frame().x() + max_width * 1.5 * current_a);
   });
   return new_layers;
 }
@@ -646,7 +667,7 @@ function handle_sumbit(dialog, context) {
 
             if (chosen_alignments[alignment_i] == '1') {
               nl_i += 1;
-              new_layers.push(create_text_and_style({
+              var new_layer = create_text_and_style({
                 current_layer: current_layer,
                 lh: lh,
                 x: nx,
@@ -657,8 +678,9 @@ function handle_sumbit(dialog, context) {
                 replace_text_with: name,
                 alignment_i: alignment_is[alignment_i],
                 alignment: alignment.toLowerCase()
-              }));
-              nx += 450 * break_points.length;
+              }),
+                  current_height = new_layer.frame().height();
+              new_layers.push(new_layer);
             } else {
               console.log("".concat(alignment, " not selected"));
             }
@@ -669,7 +691,7 @@ function handle_sumbit(dialog, context) {
         console.log("".concat(breakpoint, " not chosen"));
       }
     });
-    current_layer_parent.insertLayers_afterLayer(reverse_layers_y(new_layers), current_layer);
+    current_layer_parent.insertLayers_afterLayer(reverse_layers_and_fix_x(new_layers, chosen_alignments), current_layer);
   } else if (response == '1001') {
     consoole.log('Cancel');
   } else {
