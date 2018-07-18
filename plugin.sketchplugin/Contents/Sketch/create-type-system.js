@@ -435,6 +435,22 @@ function create_dialog(context) {
   // 	}
   // };
 
+  viewLine = viewSpacer.nextLine();
+  var rounding = {
+    x: 100,
+    y: viewLine,
+    width: 190,
+    height: viewLineHeight,
+    options: ['Normal', 'Material', 'None'],
+    label: {
+      x: 0,
+      y: viewLine,
+      width: 100,
+      height: viewLineHeight,
+      fontSize: 12,
+      message: "Rounding"
+    }
+  };
   var view = NSView.alloc().initWithFrame(NSMakeRect(0, 0, viewWidth, viewHeight));
   alert.addAccessoryView(view);
   var model = new Model();
@@ -460,6 +476,8 @@ function create_dialog(context) {
   createLabel(view, breakpoint_checkboxes.label); // model.addProp('naming_convention', createTextField(view, naming_convention));
   // createLabel(view, naming_convention.label);
 
+  model.addProp('rounding', createDropdown(view, rounding));
+  createLabel(view, rounding.label);
   return {
     alert: alert,
     model: model
@@ -535,6 +553,22 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments) {
   });
   return new_layers;
 }
+
+function get_rounding(rounding_type) {
+  if (rounding_type == 'Normal') {
+    return Math.round;
+  } else if (rounding_type == 'Material') {
+    return function (x) {
+      var r = (Math.round(x * 4) / 4).toFixed(2);
+      console.log(x + ' -> ' + r);
+      return r;
+    };
+  }
+
+  return function (x) {
+    return x;
+  };
+}
 /**
  * options: {
 	current_layer:,
@@ -607,7 +641,8 @@ function handle_sumbit(dialog, context) {
   if (response == '1000') {
     console.log('Generate Type System');
     console.log('Type Scale: ' + dialog.model.get('type_scale'));
-    console.log('Line Height: ' + dialog.model.get('line_height')); // console.log('Paragraph Spacing: '+ dialog.model.get('paragraph_spacing'));
+    console.log('Line Height: ' + dialog.model.get('line_height'));
+    console.log('Rounding: ' + dialog.model.get('rounding')); // console.log('Paragraph Spacing: '+ dialog.model.get('paragraph_spacing'));
     // console.log(dialog.model.getArray('breakpoints'));
 
     console.log(dialog.model.getArray('alignments'));
@@ -634,6 +669,7 @@ function handle_sumbit(dialog, context) {
         // ps = parseFloat(dialog.model.get('paragraph_spacing')),
     chosen_alignments = dialog.model.getArray('alignments'),
         chosen_breakpoints = dialog.model.getArray('breakpoints'),
+        rounding = get_rounding(dialog.model.get('rounding')),
         y = current_layer.frame().y(),
         x = current_layer.frame().x();
     var current_text_style = current_layer.style().textStyle(),
@@ -656,10 +692,11 @@ function handle_sumbit(dialog, context) {
       var current_fs = fs;
 
       if (chosen_breakpoints[breakpoint_i] == '1') {
+        var height_inc = Math.pow(ts, header_tags.length) * current_fs;
         header_tags.forEach(function (header_tag, header_tag_i) {
           current_fs *= ts;
-          lh = Math.round(ls * current_fs);
-          y += current_fs + lh + 25; // start off by 1
+          lh = ls * current_fs;
+          y += current_fs + lh + height_inc; // start off by 1
 
           var nx = x;
           alignments.forEach(function (alignment, alignment_i) {
@@ -669,10 +706,10 @@ function handle_sumbit(dialog, context) {
               nl_i += 1;
               var new_layer = create_text_and_style({
                 current_layer: current_layer,
-                lh: lh,
+                lh: rounding(lh),
                 x: nx,
                 y: y,
-                fs: Math.round(current_fs),
+                fs: rounding(current_fs),
                 // ps: ps,
                 style_name: name,
                 replace_text_with: name,
