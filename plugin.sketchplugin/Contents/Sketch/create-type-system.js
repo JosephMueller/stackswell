@@ -465,6 +465,55 @@ function create_dialog(context) {
     model: model
   };
 }
+
+function reverse_layers_y(new_layers) {
+  // reorder layers so biggest layer is first
+  // do this by keeping a map of the unique y positions for each break point
+  // and swapping the y coordinate of each layer
+  // hacky, but easier than reworking the fs/scale math
+  var ys = {};
+  new_layers.forEach(function (layer) {
+    var pieces = layer.stringValue().split('/'),
+        current_bp = pieces[0],
+        current_y = layer.frame().y();
+
+    if (!(current_bp in ys)) {
+      ys[current_bp] = [];
+    }
+
+    if (ys[current_bp].length === 0) {
+      ys[current_bp].push(current_y);
+    } else {
+      if (ys[current_bp][ys[current_bp].length - 1] != current_y) {
+        ys[current_bp].push(current_y);
+      }
+    }
+  });
+
+  for (var y in ys) {
+    ys[y] = ys[y].reverse();
+  }
+
+  var previous_y, previous_bp, y_i;
+  new_layers.forEach(function (layer) {
+    var pieces = layer.stringValue().split('/'),
+        current_bp = pieces[0],
+        current_y = layer.frame().y();
+
+    if (previous_bp != current_bp) {
+      y_i = -1;
+      previous_bp = current_bp;
+    }
+
+    if (previous_y != current_y) {
+      y_i += 1;
+      previous_y = current_y;
+    }
+
+    layer.frame().setY(ys[current_bp][y_i]);
+  });
+  return new_layers;
+}
 /**
  * options: {
 	current_layer:,
@@ -580,6 +629,7 @@ function handle_sumbit(dialog, context) {
 
     fs /= ts * bs;
     lh /= ls;
+    var nl_i = 0;
     break_points.forEach(function (breakpoint, breakpoint_i) {
       fs *= bs;
       var current_fs = fs;
@@ -595,6 +645,7 @@ function handle_sumbit(dialog, context) {
             var name = "".concat(breakpoint, "/").concat(header_tag, "/COLOR/").concat(alignment);
 
             if (chosen_alignments[alignment_i] == '1') {
+              nl_i += 1;
               new_layers.push(create_text_and_style({
                 current_layer: current_layer,
                 lh: lh,
@@ -618,7 +669,7 @@ function handle_sumbit(dialog, context) {
         console.log("".concat(breakpoint, " not chosen"));
       }
     });
-    current_layer_parent.insertLayers_afterLayer(new_layers, current_layer);
+    current_layer_parent.insertLayers_afterLayer(reverse_layers_y(new_layers), current_layer);
   } else if (response == '1001') {
     consoole.log('Cancel');
   } else {
