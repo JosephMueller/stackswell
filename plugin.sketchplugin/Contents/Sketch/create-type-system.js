@@ -718,6 +718,7 @@ function handle_sumbit(dialog, context) {
                 naming_convention: naming_convention == 'This will replace the hex.' ? false : naming_convention
               }),
                   current_height = new_layer.frame().height();
+              nx += 450 * break_points.length;
               new_layers.push(new_layer);
             } else {
               console.log("".concat(alignment, " not selected"));
