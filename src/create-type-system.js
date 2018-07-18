@@ -139,12 +139,12 @@ function create_dialog(context) {
 
 	// Creating the view
 	var viewWidth = 1200; // the width of the modal
-	var viewHeight = 150; // the height of the modal
+	var viewHeight = 250; // the height of the modal
 	var viewLineHeight = 25; // the height of each line in the modal
 
 
 	// keep current line state
-	var viewSpacer = new Spacer(viewHeight, viewLineHeight);
+	var viewSpacer = new Spacer(viewHeight, 35);
 	
 	var viewLine = viewSpacer.nextLine();
 	var type_scale = {
@@ -176,7 +176,7 @@ function create_dialog(context) {
 	var line_height = {
 		x: 100,
 		y: viewLine,
-		width: 50,
+		width: 190,
 		height: viewLineHeight,
 		initValue: 1.333,
 		label: {
@@ -361,9 +361,9 @@ function create_dialog(context) {
 
 	viewLine = viewSpacer.nextLine();
 	var naming_convention = {
-		x: 80,
+		x: 100,
 		y: viewLine,
-		width: 300,
+		width: 190,
 		height: viewLineHeight,
 		initValue: "This will replace the hex.", // TODO make this a variable/search if changing
 		label: {
@@ -501,7 +501,8 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments) {
 		current_a++;
 		
 		// console.log(layer.stringValue() + ' w: '+layer.frame().width()+' x:' + layer.frame().x() +' y:' + layer.frame().y() + ' ca:' + current_a+ ' nx:' + (layer.frame().x() + ((max_width) * current_a)));
-		layer.frame().setX(layer.frame().x() + ((max_width*1.5) * current_a));
+		// TODO this needs to do the same thinking as previous_bp
+		// layer.frame().setX(layer.frame().x() + ((max_width*1.5) * current_a));
 	});
 
 	return new_layers;
