@@ -359,21 +359,21 @@ function create_dialog(context) {
 		}
 	};
 
-	// viewLine = viewSpacer.nextLine();
-	// var naming_convention = {
-	// 	x: 80,
-	// 	y: viewLine,
-	// 	width: 300,
-	// 	height: viewLineHeight,
-	// 	initValue: "Type Face/Color/Alignment",
-	// 	label: {
-	// 		x: 0,
-	// 		y: viewLine,
-	// 		width: 75,
-	// 		height: viewLineHeight,
-	// 		message: "BkPt/H#/"
-	// 	}
-	// };
+	viewLine = viewSpacer.nextLine();
+	var naming_convention = {
+		x: 80,
+		y: viewLine,
+		width: 300,
+		height: viewLineHeight,
+		initValue: "This will replace the hex.", // TODO make this a variable/search if changing
+		label: {
+			x: 0,
+			y: viewLine,
+			width: 75,
+			height: viewLineHeight,
+			message: "Color Name"
+		}
+	};
 
 	viewLine = viewSpacer.nextLine();
 	var rounding = {
@@ -425,8 +425,8 @@ function create_dialog(context) {
 	createLabel(view, breakpoint_checkboxes.label);
 
 
-	// model.addProp('naming_convention', createTextField(view, naming_convention));
-	// createLabel(view, naming_convention.label);
+	model.addProp('naming_convention', createTextField(view, naming_convention));
+	createLabel(view, naming_convention.label);
 	
 
 	model.addProp('rounding', createDropdown(view, rounding));
@@ -512,13 +512,9 @@ function get_rounding(rounding_type) {
 		return Math.round;
 	} else if (rounding_type == 'Material') {
 		return function (x) {
-
-			var r =  (Math.round(x * 4) / 4).toFixed(2);
-			console.log(x + ' -> ' + r);
-			return r;
+			return (Math.round(x * 4) / 4).toFixed(2);
 		}
 	}
-
 	return function (x) { return x; };
 }
 /**
@@ -576,7 +572,7 @@ function create_text_and_style(options) {
 	style.setTextStyle_(textStyle);
 
 	// add the style to shared style
-	var hexVal = '#'+textStyleAttributes.NSColor.hexValue();
+	var hexVal = options.naming_convention ? options.naming_convention : '#'+textStyleAttributes.NSColor.hexValue();
 	var ss = MSSharedStyle.alloc().initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style); 
 	context.document.documentData().layerTextStyles().addSharedObject(ss); // TODO can cache upto .layerTextStyles()
 
@@ -628,6 +624,7 @@ function handle_sumbit (dialog, context) {
 			chosen_alignments = dialog.model.getArray('alignments'),
 			chosen_breakpoints = dialog.model.getArray('breakpoints'),
 			rounding = get_rounding(dialog.model.get('rounding')),
+			naming_convention = dialog.model.get('naming_convention'),
 			y = current_layer.frame().y(),
 			x = current_layer.frame().x();
 
@@ -692,7 +689,8 @@ function handle_sumbit (dialog, context) {
 								style_name: name,
 								replace_text_with: name,
 								alignment_i: alignment_is[alignment_i],
-								alignment: alignment.toLowerCase()
+								alignment: alignment.toLowerCase(),
+								naming_convention: naming_convention == 'This will replace the hex.' ? false : naming_convention
 							}),
 								current_height = new_layer.frame().height();
 							
