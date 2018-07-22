@@ -295,23 +295,23 @@ function create_dialog(context) {
       fontSize: 12,
       message: "Line Height"
     }
-  }; // viewLine = viewSpacer.nextLine();
-  // var paragraph_spacing = {
-  // 	x: 150,
-  // 	y: viewLine,
-  // 	width: 190,
-  // 	height: viewLineHeight,
-  // 	initValue: 1.333,
-  // 	label: {
-  // 		x: 0,
-  // 		y: viewLine,
-  // 		width: 150,
-  // 		height: viewLineHeight,
-  // 		fontSize: 12,
-  // 		message: "Paragraph Spacing"
-  // 	}
-  // };
-
+  };
+  viewLine = viewSpacer.nextLine();
+  var paragraph_spacing = {
+    x: 100,
+    y: viewLine,
+    width: 190,
+    height: viewLineHeight,
+    initValue: 0,
+    label: {
+      x: 0,
+      y: viewLine,
+      width: 100,
+      height: viewLineHeight,
+      fontSize: 12,
+      message: "Paragraph Spacing"
+    }
+  };
   viewLine = viewSpacer.nextLine();
   var alignment_checkboxes = {
     checkBoxes: [{
@@ -479,9 +479,9 @@ function create_dialog(context) {
 
   createLabel(view, type_scale.label);
   model.addProp('line_height', createTextField(view, line_height));
-  createLabel(view, line_height.label); // model.addProp('paragraph_spacing', createTextField(view, paragraph_spacing));
-  // createLabel(view, paragraph_spacing.label);
-
+  createLabel(view, line_height.label);
+  model.addProp('paragraph_spacing', createTextField(view, paragraph_spacing));
+  createLabel(view, paragraph_spacing.label);
   alignment_checkboxes.checkBoxes.forEach(function (checkbox) {
     return model.addPropArray('alignments', createCheckBox(view, checkbox));
   });
@@ -593,7 +593,7 @@ function create_text_and_style(options) {
   new_para_style.setMaximumLineHeight(options.lh);
   new_para_style.setMinimumLineHeight(options.lh);
   new_para_style.setAlignment(options.alignment_i);
-  new_para_style.setParagraphSpacing(0); // create a new text style
+  new_para_style.setParagraphSpacing(options.ps); // create a new text style
 
   var textStyleAttributes = {
     // NSColor.colorWithRed_green_blue_alpha(1,0,0,1)
@@ -655,8 +655,8 @@ function handle_sumbit(dialog, context) {
         ts = parseFloat(dialog.model.get('type_scale')),
         ls = parseFloat(dialog.model.get('line_height')),
         bs = parseFloat(dialog.model.get('breakpoint_scale')),
-        // ps = parseFloat(dialog.model.get('paragraph_spacing')),
-    chosen_alignments = dialog.model.getArray('alignments'),
+        ps = parseFloat(dialog.model.get('paragraph_spacing')),
+        chosen_alignments = dialog.model.getArray('alignments'),
         chosen_breakpoints = dialog.model.getArray('breakpoints'),
         rounding = get_rounding(dialog.model.get('rounding')),
         naming_convention = dialog.model.get('naming_convention'),
@@ -694,7 +694,7 @@ function handle_sumbit(dialog, context) {
                 x: x,
                 y: new_y,
                 fs: rounding(current_fs),
-                // ps: ps * lh,
+                ps: rounding(ps * lh),
                 style_name: name,
                 replace_text_with: name,
                 alignment_i: alignment_is[alignment_i],
