@@ -665,11 +665,11 @@ function handle_sumbit (dialog, context) {
 		fs /= (ts*bs);
 		lh /= ls;
 		var previous_layer = current_layer;
+		var breakpoint_group_spacing = 50;
 		break_points.forEach(function (breakpoint, breakpoint_i) {
-			fs *= bs;
 			var current_fs = fs;
-			var breakpoint_group_spacing = 50;
 			if (chosen_breakpoints[breakpoint_i] == '1') {
+				fs *= bs;
 				header_tags.forEach(function (header_tag, header_tag_i) {
 					current_fs *= ts;
 					lh = ls * current_fs;
