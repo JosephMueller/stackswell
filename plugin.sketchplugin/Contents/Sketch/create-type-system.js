@@ -243,7 +243,7 @@ function create_dialog(context) {
 
   var viewWidth = 1200; // the width of the modal
 
-  var viewHeight = 250; // the height of the modal
+  var viewHeight = 300; // the height of the modal
 
   var viewLineHeight = 25; // the height of each line in the modal
   // keep current line state
@@ -672,7 +672,7 @@ function handle_sumbit(dialog, context) {
     fs /= ts * bs;
     lh /= ls;
     var previous_layer = current_layer;
-    var breakpoint_group_spacing = 50;
+    var breakpoint_group_spacing = 100;
     break_points.forEach(function (breakpoint, breakpoint_i) {
       var current_fs = fs;
 
