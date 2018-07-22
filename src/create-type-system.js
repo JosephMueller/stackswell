@@ -550,7 +550,7 @@ function create_text_and_style(options) {
 	// setup the frame
 	new_layer.frame().setY(options.y);
 	new_layer.frame().setX(options.x);
-	new_layer.setLineHeight(options.lh);
+	// new_layer.setLineHeight(options.lh);
 
 	// get the current style & attributes
 	var current_text_style = options.current_layer.style().textStyle(),
@@ -562,8 +562,8 @@ function create_text_and_style(options) {
 
 	// var old = new_para_style.maximumLineHeight();
 	// new_para_style.lineHeight = options.lh;
-	new_para_style.setLineSpacing(options.lh);
-	new_para_style.setMaximumLineHeight(options.lh);
+	// new_para_style.setLineSpacing(options.lh);
+	// new_para_style.setMaximumLineHeight(options.lh);
 	new_para_style.setMinimumLineHeight(options.lh);
 	new_para_style.setAlignment(options.alignment_i);
 	new_para_style.setParagraphSpacing(options.ps);

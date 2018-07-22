@@ -579,8 +579,8 @@ function create_text_and_style(options) {
   // setup the frame
 
   new_layer.frame().setY(options.y);
-  new_layer.frame().setX(options.x);
-  new_layer.setLineHeight(options.lh); // get the current style & attributes
+  new_layer.frame().setX(options.x); // new_layer.setLineHeight(options.lh);
+  // get the current style & attributes
 
   var current_text_style = options.current_layer.style().textStyle(),
       current_attributes = current_text_style.attributes(),
@@ -588,9 +588,9 @@ function create_text_and_style(options) {
 
   new_para_style.setParagraphStyle(current_attributes.NSParagraphStyle); // var old = new_para_style.maximumLineHeight();
   // new_para_style.lineHeight = options.lh;
+  // new_para_style.setLineSpacing(options.lh);
+  // new_para_style.setMaximumLineHeight(options.lh);
 
-  new_para_style.setLineSpacing(options.lh);
-  new_para_style.setMaximumLineHeight(options.lh);
   new_para_style.setMinimumLineHeight(options.lh);
   new_para_style.setAlignment(options.alignment_i);
   new_para_style.setParagraphSpacing(options.ps); // create a new text style
