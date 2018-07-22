@@ -1,5 +1,6 @@
 {
   "name": "Stackswell",
+  "description": "Design responsively, faster, smarter, and more consistently.",
   "version": "1.1.0",
   "engines": {
     "sketch": ">=3.0"

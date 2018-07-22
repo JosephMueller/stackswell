@@ -231,7 +231,7 @@ function () {
 function create_dialog(context) {
   var alert = COSAlertWindow.new();
   alert.setIcon(NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon2x.png").path()));
-  alert.setMessageText("Create type system"); // Creating dialog buttons
+  alert.setMessageText("Create Type System"); // Creating dialog buttons
 
   alert.addButtonWithTitle("Generate System");
   alert.addButtonWithTitle("Cancel"); // Creating the view
@@ -259,7 +259,22 @@ function create_dialog(context) {
       fontSize: 12,
       message: "Type Scale"
     }
-  };
+  }; // var type_scale = {
+  // 	x: 100,
+  // 	y: viewLine,
+  // 	width: 190,
+  // 	height: viewLineHeight,
+  // 	initValue: 1.333,
+  // 	label: {
+  // 		x: 0,
+  // 		y: viewLine,
+  // 		width: 100,
+  // 		height: viewLineHeight,
+  // 		fontSize: 12,
+  // 		message: "Type Scale"
+  // 	}
+  // };
+
   viewLine = viewSpacer.nextLine();
   var line_height = {
     x: 100,
@@ -442,7 +457,7 @@ function create_dialog(context) {
     y: viewLine,
     width: 190,
     height: viewLineHeight,
-    options: ['Normal', 'Material', 'None'],
+    options: ['Normal', 'Multiples of 4', 'Multiples of 8', 'None'],
     label: {
       x: 0,
       y: viewLine,
@@ -455,7 +470,8 @@ function create_dialog(context) {
   var view = NSView.alloc().initWithFrame(NSMakeRect(0, 0, viewWidth, viewHeight));
   alert.addAccessoryView(view);
   var model = new Model();
-  model.addProp('type_scale', createDropdown(view, type_scale));
+  model.addProp('type_scale', createDropdown(view, type_scale)); // model.addProp('type_scale', createTextField(view, type_scale));
+
   createLabel(view, type_scale.label);
   model.addProp('line_height', createTextField(view, line_height));
   createLabel(view, line_height.label); // model.addProp('paragraph_spacing', createTextField(view, paragraph_spacing));
@@ -558,9 +574,14 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments) {
 function get_rounding(rounding_type) {
   if (rounding_type == 'Normal') {
     return Math.round;
-  } else if (rounding_type == 'Material') {
+  } else if (rounding_type == 'Multiples of 4') {
     return function (x) {
-      return (Math.round(x * 4) / 4).toFixed(2);
+      return x - x % 4 + Math.round(parseFloat(x % 4) / 4.0) * 4;
+      ;
+    };
+  } else if (rounding_type == 'Multiples of 8') {
+    return function (x) {
+      return x - x % 8 + Math.round(parseFloat(x % 8) / 8.0) * 8;
     };
   }
 
@@ -597,14 +618,14 @@ function create_text_and_style(options) {
       current_attributes = current_text_style.attributes(),
       new_para_style = NSMutableParagraphStyle.alloc().init(); // set the paragraph properties
 
-  new_para_style.setParagraphStyle(current_attributes.NSParagraphStyle);
-  var old = new_para_style.maximumLineHeight(); // new_para_style.lineHeight = options.lh;
+  new_para_style.setParagraphStyle(current_attributes.NSParagraphStyle); // var old = new_para_style.maximumLineHeight();
+  // new_para_style.lineHeight = options.lh;
 
-  new_para_style.setLineSpacing(options.lh);
-  new_para_style.setMaximumLineHeight(options.lh);
-  new_para_style.setMinimumLineHeight(options.lh);
-  new_para_style.setAlignment(options.alignment_i); // new_para_style.setParagraphSpacing();
-  // create a new text style
+  new_para_style.setLineSpacing(options.lh); // new_para_style.setMaximumLineHeight(options.lh);
+  // new_para_style.setMinimumLineHeight(options.lh);
+
+  new_para_style.setAlignment(options.alignment_i);
+  new_para_style.setParagraphSpacing(0); // create a new text style
 
   var textStyleAttributes = {
     // NSColor.colorWithRed_green_blue_alpha(1,0,0,1)
@@ -627,8 +648,8 @@ function create_text_and_style(options) {
   new_layer.setStyle(style); // textStyle.syncOwningTextLayerWithThisStyle();
   // save the shared style
 
-  ss.updateToMatch(style); // ss.resetReferencingInstances();
-
+  ss.updateToMatch(style);
+  ss.resetReferencingInstances();
   return new_layer;
 }
 
@@ -732,7 +753,7 @@ function handle_sumbit(dialog, context) {
     });
     current_layer_parent.insertLayers_afterLayer(reverse_layers_and_fix_x(new_layers, chosen_alignments), current_layer);
   } else if (response == '1001') {
-    consoole.log('Cancel');
+    console.log('Cancel');
   } else {
     console.log('Unhandled response');
     console.log(response);
