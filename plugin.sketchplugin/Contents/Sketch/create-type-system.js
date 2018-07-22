@@ -108,6 +108,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
+var alignments = ['Left', // 0
+'Center', // 2
+'Right' // 1
+];
+var alignment_is = [0, 2, 1];
 
 function createTextField(view, settings) {
   var textField = NSTextField.alloc().initWithFrame(NSMakeRect(settings.x, settings.y, settings.width, settings.height));
@@ -250,7 +255,7 @@ function create_dialog(context) {
     y: viewLine,
     width: 190,
     height: viewLineHeight,
-    options: ['1.067 Minor Second', '1.125 Major Second', '1.200 Minor Third', '1.250 Major Third', '1.333 Perfect Fourth', '1.414 Augmented Fourth', '1.500 Perfect Fifth', '1.618 Golden Ratio'],
+    options: ['1.067 Minor Second', '1.125 Major Second', '1.200 Minor Third', '1.250 Major Third', '1.333 Perfect Fourth', '1.414 Augmented Fourth', '1.500 Perfect Fifth', '1.6 Minor Sixth', '1.618 Golden Ratio', '1.667 Major Sixth', '1.778 Minor Seventh', '1.875 Major Seventh', '2 Octave', '2.5 Major Tenth'],
     label: {
       x: 0,
       y: viewLine,
@@ -264,7 +269,7 @@ function create_dialog(context) {
   // 	y: viewLine,
   // 	width: 190,
   // 	height: viewLineHeight,
-  // 	initValue: 1.333,
+  // 	initValue: 1.25,
   // 	label: {
   // 		x: 0,
   // 		y: viewLine,
@@ -378,7 +383,7 @@ function create_dialog(context) {
     y: viewLine,
     width: 190,
     height: viewLineHeight,
-    options: ['1.067 Minor Second', '1.125 Major Second', '1.200 Minor Third', '1.250 Major Third', '1.333 Perfect Fourth', '1.414 Augmented Fourth', '1.500 Perfect Fifth', '1.618 Golden Ratio'],
+    options: ['1.067 Minor Second', '1.125 Major Second', '1.200 Minor Third', '1.250 Major Third', '1.333 Perfect Fourth', '1.414 Augmented Fourth', '1.500 Perfect Fifth', '1.6 Minor Sixth', '1.618 Golden Ratio', '1.667 Major Sixth', '1.778 Minor Seventh', '1.875 Major Seventh', '2 Octave', '2.5 Major Tenth'],
     label: {
       x: 0,
       y: viewLine,
@@ -501,7 +506,7 @@ function create_dialog(context) {
   };
 }
 
-function reverse_layers_and_fix_x(new_layers, chosen_alignments) {
+function reverse_layers_and_fix_x(new_layers, chosen_alignments, type_scale, breakpoint_scale) {
   // reorder layers so biggest layer is first
   // do this by keeping a map of the unique y positions for each break point
   // and swapping the y coordinate of each layer
@@ -509,64 +514,27 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments) {
   // this function also repositions the layers horizontally
   // adjusting for the max width of all the given layers
   var ys = {},
-      max_width = 0;
+      max_width = 0,
+      max_height = 0;
   new_layers.forEach(function (layer) {
-    var pieces = layer.stringValue().split('/'),
-        current_bp = pieces[0],
-        current_y = layer.frame().y(),
-        current_width = layer.frame().width(),
-        current_height = layer.frame().height();
-
-    if (!(current_bp in ys)) {
-      ys[current_bp] = [];
-    }
-
-    if (ys[current_bp].length === 0) {
-      ys[current_bp].push(current_y);
-    } else {
-      if (ys[current_bp][ys[current_bp].length - 1] != current_y) {
-        ys[current_bp].push(current_y);
-      }
-    }
+    var current_width = layer.frame().width(),
+        current_height = layer.frame().height(),
+        current_x = layer.frame().x();
 
     if (current_width > max_width) {
       max_width = current_width;
     }
+
+    if (current_height > max_height) {
+      max_height - current_height;
+    }
   });
-
-  for (var y in ys) {
-    ys[y] = ys[y].reverse();
-  }
-
-  var previous_y,
-      previous_bp,
-      y_i,
-      current_a = -1;
+  var previous_layer = null;
   new_layers.forEach(function (layer) {
-    var pieces = layer.stringValue().split('/'),
-        current_bp = pieces[0],
-        current_y = layer.frame().y(),
-        current_height = layer.frame().height();
-
-    if (previous_bp != current_bp) {
-      y_i = -1;
-      previous_bp = current_bp;
-    }
-
-    if (previous_y != current_y) {
-      y_i += 1;
-      previous_y = current_y;
-    }
-
-    layer.frame().setY(ys[current_bp][y_i]);
-
-    if (current_a >= chosen_alignments.length - 1) {
-      current_a = -1;
-    }
-
-    current_a++; // console.log(layer.stringValue() + ' w: '+layer.frame().width()+' x:' + layer.frame().x() +' y:' + layer.frame().y() + ' ca:' + current_a+ ' nx:' + (layer.frame().x() + ((max_width) * current_a)));
-    // TODO this needs to do the same thinking as previous_bp
-    // layer.frame().setX(layer.frame().x() + ((max_width*1.5) * current_a));
+    var pieces = layer.stringValue().split('/');
+    var current_column = alignments.indexOf(pieces.pop());
+    layer.frame().setX(layer.frame().x() + max_width * Math.max(1.25, breakpoint_scale, type_scale) * current_column);
+    previous_layer = layer;
   });
   return new_layers;
 }
@@ -621,9 +589,9 @@ function create_text_and_style(options) {
   new_para_style.setParagraphStyle(current_attributes.NSParagraphStyle); // var old = new_para_style.maximumLineHeight();
   // new_para_style.lineHeight = options.lh;
 
-  new_para_style.setLineSpacing(options.lh); // new_para_style.setMaximumLineHeight(options.lh);
-  // new_para_style.setMinimumLineHeight(options.lh);
-
+  new_para_style.setLineSpacing(options.lh);
+  new_para_style.setMaximumLineHeight(options.lh);
+  new_para_style.setMinimumLineHeight(options.lh);
   new_para_style.setAlignment(options.alignment_i);
   new_para_style.setParagraphSpacing(0); // create a new text style
 
@@ -643,7 +611,8 @@ function create_text_and_style(options) {
   context.document.documentData().layerTextStyles().addSharedObject(ss); // TODO can cache upto .layerTextStyles()
   // replace the text in the layer
 
-  new_layer.replaceTextPreservingAttributeRanges(options.replace_text_with.replace('COLOR', hexVal)); // set the style of the layer
+  new_layer.replaceTextPreservingAttributeRanges(options.replace_text_with.replace('COLOR', hexVal));
+  new_layer.setName(options.replace_text_with.replace('COLOR', hexVal)); // set the style of the layer
 
   new_layer.setStyle(style); // textStyle.syncOwningTextLayerWithThisStyle();
   // save the shared style
@@ -697,61 +666,54 @@ function handle_sumbit(dialog, context) {
         current_attributes = current_text_style.attributes();
     var new_layers = [];
     var break_points = ['XS', 'SM', 'MD', 'LG', '.XL'];
-    var header_tags = ['P', 'H6', 'H5', 'H4', 'H3', 'H2', 'H1'];
-    var alignments = ['Left', // 0
-    'Center', // 2
-    'Right' // 1
-    ];
-    var alignment_is = [0, 2, 1]; // start off by 1
+    var header_tags = ['P', 'H6', 'H5', 'H4', 'H3', 'H2', 'H1']; // start off by 1
     // TODO also delete the original selected text layer
 
     fs /= ts * bs;
     lh /= ls;
-    var nl_i = 0;
+    var previous_layer = current_layer;
     break_points.forEach(function (breakpoint, breakpoint_i) {
       fs *= bs;
       var current_fs = fs;
+      var breakpoint_group_spacing = 50;
 
       if (chosen_breakpoints[breakpoint_i] == '1') {
-        var height_inc = Math.pow(ts, header_tags.length) * current_fs;
         header_tags.forEach(function (header_tag, header_tag_i) {
           current_fs *= ts;
           lh = ls * current_fs;
-          y += current_fs + lh + height_inc; // start off by 1
-
-          var nx = x;
+          y += current_fs + lh;
           alignments.forEach(function (alignment, alignment_i) {
             var name = "".concat(breakpoint, "/").concat(header_tag, "/COLOR/").concat(alignment);
 
             if (chosen_alignments[alignment_i] == '1') {
-              nl_i += 1;
+              // var new_y = y + previous_layer.frame().height() + previous_layer.frame().y();
+              var new_y = y;
               var new_layer = create_text_and_style({
                 current_layer: current_layer,
                 lh: rounding(lh),
-                x: nx,
-                y: y,
+                x: x,
+                y: new_y,
                 fs: rounding(current_fs),
-                // ps: ps,
+                // ps: ps * lh,
                 style_name: name,
                 replace_text_with: name,
                 alignment_i: alignment_is[alignment_i],
                 alignment: alignment.toLowerCase(),
                 naming_convention: naming_convention == 'This will replace the hex.' ? false : naming_convention
-              }),
-                  current_height = new_layer.frame().height();
-              nx += 450 * break_points.length;
+              });
               new_layers.push(new_layer);
             } else {
               console.log("".concat(alignment, " not selected"));
             }
           });
+          previous_layer = new_layers[new_layers.length - 1];
         });
-        y += 100;
+        y += breakpoint_group_spacing;
       } else {
         console.log("".concat(breakpoint, " not chosen"));
       }
     });
-    current_layer_parent.insertLayers_afterLayer(reverse_layers_and_fix_x(new_layers, chosen_alignments), current_layer);
+    current_layer_parent.insertLayers_afterLayer(reverse_layers_and_fix_x(new_layers, chosen_alignments, ts, bs), current_layer);
   } else if (response == '1001') {
     console.log('Cancel');
   } else {
