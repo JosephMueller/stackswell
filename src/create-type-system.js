@@ -403,7 +403,7 @@ function create_dialog(context) {
 		y: viewLine,
 		width: 190,
 		height: viewLineHeight,
-		initValue: "This will replace the hex.", // TODO make this a variable/search if changing
+		initValue: 'E.g. "Blue"', // TODO make this a variable/search if changing
 		label: {
 			x: 0,
 			y: viewLine,
@@ -691,7 +691,7 @@ function handle_sumbit (dialog, context) {
 								replace_text_with: name,
 								alignment_i: alignment_is[alignment_i],
 								alignment: alignment.toLowerCase(),
-								naming_convention: naming_convention == 'This will replace the hex.' ? false : naming_convention
+								naming_convention: naming_convention == 'E.g. Blue.' ? false : naming_convention
 							});
 
 						
