@@ -495,19 +495,10 @@ function create_dialog(context) {
 }
 
 function reverse_layers_and_fix_x(new_layers, chosen_alignments, type_scale, breakpoint_scale) {
-	// reorder layers so biggest layer is first
-	// do this by keeping a map of the unique y positions for each break point
-	// and swapping the y coordinate of each layer
-	// hacky, but easier than reworking the fs/scale math
-	// this function also repositions the layers horizontally
-	// adjusting for the max width of all the given layers
-	var ys = {},
-		max_width = 0,
-		max_height = 0;
+		var max_width = 0;
 
 	new_layers.forEach(function (layer) {
 		var current_width = layer.frame().width(),
-			current_height = layer.frame().height(),
 			current_x = layer.frame().x();
 
 		if (current_width > max_width) {
@@ -516,8 +507,8 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments, type_scale, bre
 	});
 
 	new_layers.forEach(function (layer) {
-		var pieces = layer.stringValue().split('/');
-		var current_column = alignments.indexOf(pieces.pop());
+		var pieces = layer.stringValue().split('/'),
+			current_column = alignments.indexOf(pieces.pop());
 		layer.frame().setX(layer.frame().x() + max_width * Math.max(2, breakpoint_scale, type_scale) * current_column);
 	});
 
