@@ -504,6 +504,7 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments, type_scale, bre
 	var ys = {},
 		max_width = 0,
 		max_height = 0;
+
 	new_layers.forEach(function (layer) {
 		var current_width = layer.frame().width(),
 			current_height = layer.frame().height(),
@@ -512,18 +513,12 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments, type_scale, bre
 		if (current_width > max_width) {
 			max_width = current_width;
 		}
-
-		if (current_height > max_height) {
-			max_height - current_height;
-		}
 	});
-	var previous_layer = null;
+
 	new_layers.forEach(function (layer) {
 		var pieces = layer.stringValue().split('/');
 		var current_column = alignments.indexOf(pieces.pop());
 		layer.frame().setX(layer.frame().x() + max_width * Math.max(2, breakpoint_scale, type_scale) * current_column);
-		
-		previous_layer = layer;
 	});
 
 	return new_layers;
