@@ -635,8 +635,8 @@ function create_text_and_style(options) {
   new_para_style.setParagraphStyle(current_attributes.NSParagraphStyle); // var old = new_para_style.maximumLineHeight();
   // new_para_style.lineHeight = options.lh;
   // new_para_style.setLineSpacing(options.lh);
-  // new_para_style.setMaximumLineHeight(options.lh);
 
+  new_para_style.setMaximumLineHeight(options.lh);
   new_para_style.setMinimumLineHeight(options.lh);
   new_para_style.setAlignment(options.alignment_i);
   new_para_style.setParagraphSpacing(options.ps); // create a new text style
@@ -697,7 +697,7 @@ function handle_sumbit(dialog, context) {
 
     var current_layer_parent = current_layer.parentGroup();
     var fs = current_layer.fontSize(),
-        lh = current_layer.lineHeight(),
+        lh = parseFloat(current_layer.lineHeight()),
         ts = parseFloat(dialog.model.get('type_scale')),
         ls = parseFloat(dialog.model.get('line_height')),
         bs = parseFloat(dialog.model.get('breakpoint_scale')),
@@ -706,27 +706,24 @@ function handle_sumbit(dialog, context) {
         chosen_breakpoints = dialog.model.getArray('breakpoints'),
         rounding = get_rounding(dialog.model.get('rounding')),
         naming_convention = dialog.model.get('naming_convention'),
-        y = current_layer.frame().y(),
-        x = current_layer.frame().x();
+        y = current_layer.frame().y() + 25,
+        // + start 25 pixels below the selected text layer
+    x = current_layer.frame().x();
     var current_text_style = current_layer.style().textStyle(),
         current_attributes = current_text_style.attributes();
     var new_layers = [];
     var break_points = ['XS', 'SM', 'MD', 'LG', '.XL'];
-    var header_tags = ['P', 'H6', 'H5', 'H4', 'H3', 'H2', 'H1']; // start off by 1
-    // TODO also delete the original selected text layer
+    var header_tags = ['P', 'H6', 'H5', 'H4', 'H3', 'H2', 'H1']; // TODO also delete the original selected text layer
 
-    fs /= ts * bs;
-    lh /= ls;
     var previous_layer = current_layer;
     var breakpoint_group_spacing = 100;
     break_points.forEach(function (breakpoint, breakpoint_i) {
+      // when you move across a break point
+      //  start over at the selected layers font size
       var current_fs = fs;
 
       if (chosen_breakpoints[breakpoint_i] == '1') {
-        fs *= bs;
         header_tags.forEach(function (header_tag, header_tag_i) {
-          current_fs *= ts;
-          lh = ls * current_fs;
           y += current_fs + lh;
           alignments.forEach(function (alignment, alignment_i) {
             var name = "".concat(breakpoint, "/").concat(header_tag, "/COLOR/").concat(alignment);
@@ -745,16 +742,19 @@ function handle_sumbit(dialog, context) {
                 replace_text_with: name,
                 alignment_i: alignment_is[alignment_i],
                 alignment: alignment.toLowerCase(),
-                naming_convention: naming_convention == 'E.g. Blue.' ? false : naming_convention
+                naming_convention: naming_convention == 'E.g. "Blue"' ? false : naming_convention
               });
               new_layers.push(new_layer);
             } else {
               console.log("".concat(alignment, " not selected"));
             }
           });
+          current_fs *= ts;
+          lh = ls * current_fs;
           previous_layer = new_layers[new_layers.length - 1];
         });
         y += breakpoint_group_spacing;
+        fs *= bs;
       } else {
         console.log("".concat(breakpoint, " not chosen"));
       }
