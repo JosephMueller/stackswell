@@ -249,27 +249,27 @@ function create_dialog(context) {
   // keep current line state
 
   var viewSpacer = new Spacer(viewHeight, 35);
-  var viewLine = viewSpacer.nextLine();
-  var type_scale = {
-    x: 100,
-    y: viewLine,
-    width: 190,
-    height: viewLineHeight,
-    options: ['1.067 Minor Second', '1.125 Major Second', '1.200 Minor Third', '1.250 Major Third', '1.333 Perfect Fourth', '1.414 Augmented Fourth', '1.500 Perfect Fifth', '1.6 Minor Sixth', '1.618 Golden Ratio', '1.667 Major Sixth', '1.778 Minor Seventh', '1.875 Major Seventh', '2 Octave', '2.5 Major Tenth'],
-    label: {
-      x: 0,
-      y: viewLine,
-      width: 100,
-      height: viewLineHeight,
-      fontSize: 12,
-      message: "Type Scale"
-    }
-  }; // var type_scale = {
+  var viewLine = viewSpacer.nextLine(); // var type_scale = {
   // 	x: 100,
   // 	y: viewLine,
   // 	width: 190,
   // 	height: viewLineHeight,
-  // 	initValue: 1.25,
+  // 	options: [
+  // 		'1.067 Minor Second',
+  // 		'1.125 Major Second',
+  // 		'1.200 Minor Third',
+  // 		'1.250 Major Third',
+  // 		'1.333 Perfect Fourth',
+  // 		'1.414 Augmented Fourth',
+  // 		'1.500 Perfect Fifth',
+  // 		'1.6 Minor Sixth',
+  // 		'1.618 Golden Ratio',
+  // 		'1.667 Major Sixth',
+  // 		'1.778 Minor Seventh',
+  // 		'1.875 Major Seventh',
+  // 		'2 Octave',
+  // 		'2.5 Major Tenth'
+  // 	],
   // 	label: {
   // 		x: 0,
   // 		y: viewLine,
@@ -280,6 +280,21 @@ function create_dialog(context) {
   // 	}
   // };
 
+  var type_scale = {
+    x: 100,
+    y: viewLine,
+    width: 190,
+    height: viewLineHeight,
+    initValue: 1.25,
+    label: {
+      x: 0,
+      y: viewLine,
+      width: 100,
+      height: viewLineHeight,
+      fontSize: 12,
+      message: "Type Scale"
+    }
+  };
   viewLine = viewSpacer.nextLine();
   var line_height = {
     x: 100,
@@ -376,6 +391,37 @@ function create_dialog(context) {
   // 		message: "Text Color 2"
   // 	}
   // };
+  // viewLine = viewSpacer.nextLine();
+  // var breakpoint_scale = {
+  // 	x: 100,
+  // 	y: viewLine,
+  // 	width: 190,
+  // 	height: viewLineHeight,
+  // 	options: [
+  // 		'1.067 Minor Second',
+  // 		'1.125 Major Second',
+  // 		'1.200 Minor Third',
+  // 		'1.250 Major Third',
+  // 		'1.333 Perfect Fourth',
+  // 		'1.414 Augmented Fourth',
+  // 		'1.500 Perfect Fifth',
+  // 		'1.6 Minor Sixth',
+  // 		'1.618 Golden Ratio',
+  // 		'1.667 Major Sixth',
+  // 		'1.778 Minor Seventh',
+  // 		'1.875 Major Seventh',
+  // 		'2 Octave',
+  // 		'2.5 Major Tenth'
+  // 	],
+  // 	label: {
+  // 		x: 0,
+  // 		y: viewLine,
+  // 		width: 100,
+  // 		height: viewLineHeight,
+  // 		fontSize: 12,
+  // 		message: "Breakpoint Scale"
+  // 	}
+  // };
 
   viewLine = viewSpacer.nextLine();
   var breakpoint_scale = {
@@ -383,7 +429,7 @@ function create_dialog(context) {
     y: viewLine,
     width: 190,
     height: viewLineHeight,
-    options: ['1.067 Minor Second', '1.125 Major Second', '1.200 Minor Third', '1.250 Major Third', '1.333 Perfect Fourth', '1.414 Augmented Fourth', '1.500 Perfect Fifth', '1.6 Minor Sixth', '1.618 Golden Ratio', '1.667 Major Sixth', '1.778 Minor Seventh', '1.875 Major Seventh', '2 Octave', '2.5 Major Tenth'],
+    initValue: 1.25,
     label: {
       x: 0,
       y: viewLine,
@@ -475,7 +521,7 @@ function create_dialog(context) {
   var view = NSView.alloc().initWithFrame(NSMakeRect(0, 0, viewWidth, viewHeight));
   alert.addAccessoryView(view);
   var model = new Model();
-  model.addProp('type_scale', createDropdown(view, type_scale)); // model.addProp('type_scale', createTextField(view, type_scale));
+  model.addProp('type_scale', createTextField(view, type_scale)); // model.addProp('type_scale', createTextField(view, type_scale));
 
   createLabel(view, type_scale.label);
   model.addProp('line_height', createTextField(view, line_height));
@@ -490,7 +536,7 @@ function create_dialog(context) {
   // model.addProp('text_color_2', createTextField(view, text_color_2));
   // createLabel(view, text_color_2.label);
 
-  model.addProp('breakpoint_scale', createDropdown(view, breakpoint_scale));
+  model.addProp('breakpoint_scale', createTextField(view, breakpoint_scale));
   createLabel(view, breakpoint_scale.label);
   breakpoint_checkboxes.checkBoxes.forEach(function (checkbox) {
     return model.addPropArray('breakpoints', createCheckBox(view, checkbox));
