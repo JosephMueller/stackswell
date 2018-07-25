@@ -579,7 +579,7 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments, type_scale, bre
   new_layers.forEach(function (layer) {
     var pieces = layer.stringValue().split('/');
     var current_column = alignments.indexOf(pieces.pop());
-    layer.frame().setX(layer.frame().x() + max_width * Math.max(1.25, breakpoint_scale, type_scale) * current_column);
+    layer.frame().setX(layer.frame().x() + max_width * Math.max(2, breakpoint_scale, type_scale) * current_column);
     previous_layer = layer;
   });
   return new_layers;
