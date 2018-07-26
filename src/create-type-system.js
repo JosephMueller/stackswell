@@ -663,7 +663,6 @@ function handle_sumbit (dialog, context) {
 		];
 		
 		// TODO also delete the original selected text layer
-		var previous_layer = current_layer;
 		var breakpoint_group_spacing = 100;
 		break_points.forEach(function (breakpoint, breakpoint_i) {
 			// when you move across a break point
@@ -672,10 +671,10 @@ function handle_sumbit (dialog, context) {
 			if (chosen_breakpoints[breakpoint_i] == '1') {
 				header_tags.forEach(function (header_tag, header_tag_i) {
 					y += (current_fs + lh);
+					lh = ls * current_fs;
 					alignments.forEach(function (alignment, alignment_i) {
 						var name = `${breakpoint}/${header_tag}/COLOR/${alignment}`;
 						if (chosen_alignments[alignment_i] == '1') {
-							// var new_y = y + previous_layer.frame().height() + previous_layer.frame().y();
 							var new_y = y;
 							var new_layer = create_text_and_style({
 								current_layer: current_layer,
@@ -698,8 +697,6 @@ function handle_sumbit (dialog, context) {
 						}
 					});
 					current_fs *= ts;
-					lh = ls * current_fs;
-					previous_layer = new_layers[new_layers.length - 1];
 				});
 				y += breakpoint_group_spacing;
 				fs *= bs;
