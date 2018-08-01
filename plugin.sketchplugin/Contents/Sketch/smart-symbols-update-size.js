@@ -238,6 +238,8 @@ function () {
     this.context = options.context;
     this.style_map = {};
     this.librariesController = AppController.sharedInstance().librariesController();
+    this.libraries_map = {};
+    this.foreign_text_styles_map = {};
   }
 
   _createClass(StacksWell, [{
@@ -248,7 +250,60 @@ function () {
         self.style_map[style.name()] = style;
         self.style_map[style.style().sharedObjectID()] = self.style_map[style.name()];
       });
+      this.librariesController.userLibraries().forEach(function (library) {
+        self.libraries_map[library.libraryID()] = {};
+        library.document().layerTextStyles().sharedStyles().forEach(function (librarySharedStyle) {
+          if (!self.is_compatible_style(librarySharedStyle)) {
+            return;
+          }
+
+          self.libraries_map[library.libraryID()][librarySharedStyle.style().sharedObjectID()] = librarySharedStyle;
+          self.libraries_map[library.libraryID()][librarySharedStyle.name()] = librarySharedStyle;
+        });
+      });
+      this.context.document.documentData().foreignTextStyles().forEach(function (style) {
+        self.foreign_text_styles_map[style.localShareID()] = style;
+      });
       return this;
+    }
+  }, {
+    key: "get_library_styles_map_from_text",
+    value: function get_library_styles_map_from_text(text) {
+      if (!(text.style().sharedObjectID() in this.foreign_text_styles_map)) {
+        console.log(text.style().sharedObjectID() + ' not in foreign_text_styles_map');
+        return {};
+      }
+
+      var foreign_style = this.foreign_text_styles_map[text.style().sharedObjectID()];
+
+      if (!(foreign_style.libraryID() in this.libraries_map)) {
+        console.log(foreign_style.libraryID() + ' not in libraries_map');
+        return {};
+      }
+
+      return this.libraries_map[foreign_style.libraryID()];
+    }
+  }, {
+    key: "get_library_style_of_text",
+    value: function get_library_style_of_text(text) {
+      if (!(text.style().sharedObjectID() in this.foreign_text_styles_map)) {
+        console.log(text.style().sharedObjectID() + ' not in foreign_text_styles_map');
+        return null;
+      }
+
+      var foreign_style = this.foreign_text_styles_map[text.style().sharedObjectID()];
+
+      if (!(foreign_style.libraryID() in this.libraries_map)) {
+        console.log(foreign_style.libraryID() + ' not in libraries_map');
+        return null;
+      }
+
+      if (!(foreign_style.remoteShareID() in this.libraries_map[foreign_style.libraryID()])) {
+        console.log('foreign remoteShareID not found in libraries map');
+        return null;
+      }
+
+      return this.libraries_map[foreign_style.libraryID()][foreign_style.remoteShareID()];
     }
   }, {
     key: "get_next_smaller_label",
@@ -269,7 +324,7 @@ function () {
     }
   }, {
     key: "get_style_from_label_and_style",
-    value: function get_style_from_label_and_style(label, style) {
+    value: function get_style_from_label_and_style(label, style, text) {
       // if we found one, chop off the first part of the name
       //   ex. md/H1/Black/Left -> H1,Black,Left        
       if (style) {
@@ -289,6 +344,9 @@ function () {
 
         if (bp in this.style_map) {
           return this.style_map[bp];
+        } else if (bp in this.get_library_styles_map_from_text(text)) {
+          // TODO this could prob get cached
+          return this.get_library_styles_map_from_text(text)[bp];
         }
       }
 
@@ -297,13 +355,13 @@ function () {
 
       if (next_smaller) {
         console.log('Trying a smaller style to use: ' + next_smaller);
-        return this.get_style_from_label_and_style(next_smaller, style);
+        return this.get_style_from_label_and_style(next_smaller, style, text);
       }
     }
   }, {
     key: "get_style_from_text",
     value: function get_style_from_text(text) {
-      return this.style_map[text.style().sharedObjectID()];
+      return this.style_map[text.style().sharedObjectID()] || this.get_library_style_of_text(text);
     }
   }, {
     key: "getStyleFromName",
@@ -354,12 +412,14 @@ function () {
 
       if (current_style) {
         console.log("Current style is: " + current_style.name());
-        var style_to_apply = this.get_style_from_label_and_style(label, current_style);
+        var style_to_apply = this.get_style_from_label_and_style(label, current_style, text);
 
         if (style_to_apply) {
           console.log("Going to apply: " + style_to_apply.name());
           text.setStyle_(style_to_apply.style());
         }
+      } else {
+        console.log('text layer style not found in doc or libraries');
       }
     }
   }, {
