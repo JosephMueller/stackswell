@@ -47,6 +47,11 @@ class StacksWell
         });
         this.librariesController.userLibraries().forEach(function (library) {
             self.libraries_map[library.libraryID()] = {};
+            if (!library.document()
+                || !library.document().layerTextStyles()
+                || !library.document().layerTextStyles().sharedStyles()) {
+                return;
+            }
             library.document().layerTextStyles().sharedStyles().forEach(function (librarySharedStyle) {
                 if (!self.is_compatible_style(librarySharedStyle)) {
                     return;
