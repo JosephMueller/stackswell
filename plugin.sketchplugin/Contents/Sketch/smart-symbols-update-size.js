@@ -397,7 +397,11 @@ function () {
           // has the rest of the "old_symbol" (the target of this function)
 
           if (symbol.name().toUpperCase().split('/').indexOf(label.toUpperCase()) !== -1 && symbol.name().toUpperCase().includes(old_symbol_name.toUpperCase())) {
-            return library ? this.context.document.localSymbolForSymbol_inLibrary(symbol, library) : symbol;
+            if (!library) {
+              return symbol;
+            }
+
+            return this.librariesController.importShareableObjectReference_intoDocument(MSShareableObjectReference.referenceForShareableObject_inLibrary(symbol, library), MSDocument.currentDocument().documentData()).symbolMaster();
           }
         }
       }
