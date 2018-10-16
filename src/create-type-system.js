@@ -7,8 +7,8 @@ var alignments = [
 ];
 
 var alignment_is = [
-	0, 
-	2, 
+	0,
+	2,
 	1
 ];
 
@@ -147,7 +147,7 @@ function create_dialog(context) {
 	// Creating dialog buttons
 	alert.addButtonWithTitle("Generate System");
 	alert.addButtonWithTitle("Cancel");
-	
+
 
 	// Creating the view
 	var viewWidth = 1200; // the width of the modal
@@ -437,8 +437,8 @@ function create_dialog(context) {
 		height: viewLineHeight,
 		options: [
 			'Normal',
-			'Multiples of 4',
-			'Multiples of 8',
+			'Multiples of four',
+			'Multiples of eight',
 			'None'
 		],
 		label: {
@@ -458,7 +458,7 @@ function create_dialog(context) {
 	model.addProp('type_scale', createTextField(view, type_scale));
 	// model.addProp('type_scale', createTextField(view, type_scale));
 	createLabel(view, type_scale.label);
-		
+
 	model.addProp('line_height', createTextField(view, line_height));
 	createLabel(view, line_height.label);
 
@@ -483,7 +483,7 @@ function create_dialog(context) {
 
 	model.addProp('naming_convention', createTextField(view, naming_convention));
 	createLabel(view, naming_convention.label);
-	
+
 
 	model.addProp('rounding', createDropdown(view, rounding));
 	createLabel(view, rounding.label);
@@ -536,17 +536,17 @@ function get_rounding(rounding_type) {
 	x, // x pos
 	y, // y pos
 	fs, // font size
-	ps, // paragraph spacing 
+	ps, // paragraph spacing
 	style_name,
 	replace_text_with
  }
  */
 function create_text_and_style(options) {
 	var new_layer = options.current_layer.copy();
-	
-	// setup the line height 
+
+	// setup the line height
 	// TODO is this supposed to go into the style?
-	// 
+	//
 	// new_layer.setTextAlignment(options.alignment);
 
 	// setup the frame
@@ -585,7 +585,7 @@ function create_text_and_style(options) {
 
 	// add the style to shared style
 	var hexVal = options.naming_convention ? options.naming_convention : '#'+textStyleAttributes.NSColor.hexValue();
-	var ss = MSSharedStyle.alloc().initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style); 
+	var ss = MSSharedStyle.alloc().initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style);
 	context.document.documentData().layerTextStyles().addSharedObject(ss); // TODO can cache upto .layerTextStyles()
 
 	// replace the text in the layer
@@ -608,7 +608,7 @@ function handle_sumbit (dialog, context) {
 
 	if (response == '1000') {
 		console.log('Generate Type System');
-		
+
 		console.log('Type Scale: '+dialog.model.get('type_scale'));
 		console.log('Line Height: '+ dialog.model.get('line_height'));
 		console.log('Rounding: '+ dialog.model.get('rounding'));
@@ -647,21 +647,21 @@ function handle_sumbit (dialog, context) {
 		var new_layers = [];
 		var break_points = [
 			'XS',
-			'SM', 
-			'MD', 
-			'LG', 
+			'SM',
+			'MD',
+			'LG',
 			'.XL'
 		];
 		var header_tags = [
-			'P', 
-			'H6', 
-			'H5', 
-			'H4', 
-			'H3', 
-			'H2', 
+			'P',
+			'H6',
+			'H5',
+			'H4',
+			'H3',
+			'H2',
 			'H1'
 		];
-		
+
 		// TODO also delete the original selected text layer
 		var breakpoint_group_spacing = 100;
 		break_points.forEach(function (breakpoint, breakpoint_i) {
@@ -690,7 +690,7 @@ function handle_sumbit (dialog, context) {
 								naming_convention: naming_convention == 'E.g. "Blue"' ? false : naming_convention
 							});
 
-						
+
 							new_layers.push(new_layer);
 						} else {
 							console.log(`${alignment} not selected`);

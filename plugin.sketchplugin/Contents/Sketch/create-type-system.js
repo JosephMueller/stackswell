@@ -508,7 +508,7 @@ function create_dialog(context) {
     y: viewLine,
     width: 190,
     height: viewLineHeight,
-    options: ['Normal', 'Multiples of 4', 'Multiples of 8', 'None'],
+    options: ['Normal', 'Multiples of four', 'Multiples of eight', 'None'],
     label: {
       x: 0,
       y: viewLine,
@@ -595,7 +595,7 @@ function get_rounding(rounding_type) {
 	x, // x pos
 	y, // y pos
 	fs, // font size
-	ps, // paragraph spacing 
+	ps, // paragraph spacing
 	style_name,
 	replace_text_with
  }
@@ -603,9 +603,9 @@ function get_rounding(rounding_type) {
 
 
 function create_text_and_style(options) {
-  var new_layer = options.current_layer.copy(); // setup the line height 
+  var new_layer = options.current_layer.copy(); // setup the line height
   // TODO is this supposed to go into the style?
-  // 
+  //
   // new_layer.setTextAlignment(options.alignment);
   // setup the frame
 
