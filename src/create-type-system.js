@@ -585,7 +585,18 @@ function create_text_and_style(options) {
 
 	// add the style to shared style
 	var hexVal = options.naming_convention ? options.naming_convention : '#'+textStyleAttributes.NSColor.hexValue();
-	var ss = MSSharedStyle.alloc().initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style);
+	let ss;
+	const allocator = MSSharedStyle.alloc();
+	// Sketch 50, 51
+	if (allocator.initWithName_firstInstance) {
+		ss = allocator.initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style);
+	}
+	// sketch 52 onwards
+	else {
+
+		ss = allocator.initWithName_style(options.style_name.replace('COLOR', hexVal), style)
+	}
+
 	context.document.documentData().layerTextStyles().addSharedObject(ss); // TODO can cache upto .layerTextStyles()
 
 	// replace the text in the layer

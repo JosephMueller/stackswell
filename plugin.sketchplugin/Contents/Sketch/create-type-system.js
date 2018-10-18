@@ -508,7 +508,7 @@ function create_dialog(context) {
     y: viewLine,
     width: 190,
     height: viewLineHeight,
-    options: ['Normal', 'Multiples of four', 'Multiples of eight', 'None'],
+    options: ['Normal', 'Multiples of Four', 'Multiples of Eight', 'None'],
     label: {
       x: 0,
       y: viewLine,
@@ -638,7 +638,16 @@ function create_text_and_style(options) {
   style.setTextStyle_(textStyle); // add the style to shared style
 
   var hexVal = options.naming_convention ? options.naming_convention : '#' + textStyleAttributes.NSColor.hexValue();
-  var ss = MSSharedStyle.alloc().initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style);
+  var ss;
+  var allocator = MSSharedStyle.alloc(); // Sketch 50, 51
+
+  if (allocator.initWithName_firstInstance) {
+    ss = allocator.initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style);
+  } // sketch 52 onwards
+  else {
+      ss = allocator.initWithName_style(options.style_name.replace('COLOR', hexVal), style);
+    }
+
   context.document.documentData().layerTextStyles().addSharedObject(ss); // TODO can cache upto .layerTextStyles()
   // replace the text in the layer
 
