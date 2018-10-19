@@ -9,7 +9,7 @@ export default function (context) {
             ['LG'],
             ['.XL', 'XL', '_XL']
         ],
-        break_points: [ 
+        break_points: [
             576, // 0-575 xs
             767, // 576-766 sm
             991, // 767-990 md
@@ -17,7 +17,7 @@ export default function (context) {
                  // 1999+ xl
         ],
         context: context
-    }).init(); 
+    }).init();
     function act_on_layer(layer, break_point, stacks_well) {
         if (layer.class() == "MSTextLayer") {
             stacks_well.scale_text(layer, break_point);
@@ -25,10 +25,11 @@ export default function (context) {
             Array.from(layer.layers()).forEach(layer => act_on_layer(layer, break_point, stacks_well));
         }
     }
-   
-    stacks_well.artboards.forEach(function(artboard){
+
+
+    stacks_well.artboards.slice().forEach(function(artboard){
         var break_point = stacks_well.find_break_point_for_artboard(artboard);
-        console.log('Break point: ' , break_point);
+        // console.log('Break point: ' , break_point);
         Array.from(artboard.layers()).forEach(layer => act_on_layer(layer, break_point, stacks_well));
     });
 }

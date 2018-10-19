@@ -43,7 +43,7 @@ class StacksWell
         var self = this;
         this.avail_txt_styles.forEach(function (style) {
             self.style_map[style.name()] = style;
-            self.style_map[style.style().sharedObjectID()] = self.style_map[style.name()];
+            self.style_map[style.style().objectID()] = self.style_map[style.name()];
         });
         this.librariesController.userLibraries().forEach(function (library) {
             self.libraries_map[library.libraryID()] = {};
@@ -56,51 +56,53 @@ class StacksWell
                 if (!self.is_compatible_style(librarySharedStyle)) {
                     return;
                 }
-                self.libraries_map[library.libraryID()][librarySharedStyle.style().sharedObjectID()] = librarySharedStyle;
+                self.libraries_map[library.libraryID()][librarySharedStyle.style().objectID()] = librarySharedStyle;
                 self.libraries_map[library.libraryID()][librarySharedStyle.name()] = librarySharedStyle;
+                return
+
             });
         });
         this.context.document.documentData().foreignTextStyles().forEach(style => {
             self.foreign_text_styles_map[style.localShareID()] = style;
         });
-
+        print('completed initialization')
         return this;
     }
 
     get_library_styles_map_from_text(text) {
-        if (!(text.style().sharedObjectID() in this.foreign_text_styles_map)) {
-            console.log(text.style().sharedObjectID() + ' not in foreign_text_styles_map');
+        if (!(text.style().objectID() in this.foreign_text_styles_map)) {
+            // console.log(text.style().objectID() + ' not in foreign_text_styles_map');
             return {};
         }
 
-        var foreign_style = this.foreign_text_styles_map[text.style().sharedObjectID()];
+        var foreign_style = this.foreign_text_styles_map[text.style().objectID()];
 
         if (!(foreign_style.libraryID() in this.libraries_map)) {
-            console.log(foreign_style.libraryID() + ' not in libraries_map');
+            // console.log(foreign_style.libraryID() + ' not in libraries_map');
             return {};
         }
 
-        return this.libraries_map[foreign_style.libraryID()]; 
+        return this.libraries_map[foreign_style.libraryID()];
     }
 
     get_library_style_of_text(text) {
-        if (!(text.style().sharedObjectID() in this.foreign_text_styles_map)) {
-            console.log(text.style().sharedObjectID() + ' not in foreign_text_styles_map');
+        if (!(text.style().objectID() in this.foreign_text_styles_map)) {
+            // console.log(text.style().objectID() + ' not in foreign_text_styles_map');
             return null;
         }
 
-        var foreign_style = this.foreign_text_styles_map[text.style().sharedObjectID()];
+        var foreign_style = this.foreign_text_styles_map[text.style().objectID()];
 
         if (!(foreign_style.libraryID() in this.libraries_map)) {
-            console.log(foreign_style.libraryID() + ' not in libraries_map');
+            // console.log(foreign_style.libraryID() + ' not in libraries_map');
             return null;
         }
 
         if (!(foreign_style.remoteShareID() in this.libraries_map[foreign_style.libraryID()])) {
-            console.log('foreign remoteShareID not found in libraries map');
+            // console.log('foreign remoteShareID not found in libraries map');
             return null;
         }
-        return this.libraries_map[foreign_style.libraryID()][foreign_style.remoteShareID()]; 
+        return this.libraries_map[foreign_style.libraryID()][foreign_style.remoteShareID()];
     }
     get_next_smaller_label(label) {
         for (var i = this.labels.length - 1; i >=0; i--) {
@@ -119,7 +121,7 @@ class StacksWell
 
     get_style_from_label_and_style(label, style, text) {
         // if we found one, chop off the first part of the name
-        //   ex. md/H1/Black/Left -> H1,Black,Left        
+        //   ex. md/H1/Black/Left -> H1,Black,Left
         if (style) {
             var pieces = style.name().split('/');
             pieces.shift();
@@ -141,16 +143,16 @@ class StacksWell
                 return this.get_library_styles_map_from_text(text)[bp];
             }
         }
-        console.log('No style found for break point & style '+ label + ' ' + style);
+        // console.log('No style found for break point & style '+ label + ' ' + style);
         var next_smaller = this.get_next_smaller_label(label);
         if (next_smaller) {
-            console.log('Trying a smaller style to use: '+ next_smaller);
+            // console.log('Trying a smaller style to use: '+ next_smaller);
             return this.get_style_from_label_and_style(next_smaller, style, text);
         }
     }
 
     get_style_from_text(text) {
-        return this.style_map[text.style().sharedObjectID()] || this.get_library_style_of_text(text);
+        return this.style_map[text.style().objectID()] || this.get_library_style_of_text(text);
     }
 
     getStyleFromName(name) {
@@ -158,13 +160,13 @@ class StacksWell
     }
 
     get_master_symbol_for_breakpoint(break_point, old_symbol) {
-        // check if the symbol is part of a library, 
+        // check if the symbol is part of a library,
         //  and if it is, use the library symbols as choices for replacement
         var library = this.librariesController.libraryForShareableObject(old_symbol);
-        console.log('Has library? '+library);
+        // console.log('Has library? '+library);
         var avail_symbols = library ? library.document().localSymbols() : this.avail_symbols;
 
-        for (var j = 0; j < break_point.length; j++) { 
+        for (var j = 0; j < break_point.length; j++) {
             for (var i = 0; i < avail_symbols.length; i++) {
                 var symbol = avail_symbols[i],
                     label = break_point[j];
@@ -173,8 +175,8 @@ class StacksWell
                 var pieces = old_symbol.name().split('/');
                 pieces.pop();
                 var old_symbol_name = pieces.join('/');
-                // if the symbol that you are on 
-                // has the "label" (the break point size) 
+                // if the symbol that you are on
+                // has the "label" (the break point size)
                 // entirely, and only, in between two slashes (ignore case)
                 // AND
                 // if the symbol that you are on
@@ -186,36 +188,37 @@ class StacksWell
                         return symbol;
                     }
 
-                    
+
                     return this.librariesController.importShareableObjectReference_intoDocument(
-                        MSShareableObjectReference.referenceForShareableObject_inLibrary(symbol,library), 
+                        MSShareableObjectReference.referenceForShareableObject_inLibrary(symbol,library),
                         MSDocument.currentDocument().documentData()
                     ).symbolMaster();
                 }
             }
         }
 
-        console.log('No symbol found for break point ' + break_point);
-        var next_smaller = this.get_next_smaller_label(break_point); 
-        if (next_smaller) { 
-            console.log('Trying to find symbol for the next smaller size: '+next_smaller);
+        // console.log('No symbol found for break point ' + break_point);
+        var next_smaller = this.get_next_smaller_label(break_point);
+        if (next_smaller) {
+            // console.log('Trying to find symbol for the next smaller size: '+next_smaller);
             return this.get_master_symbol_for_breakpoint(next_smaller, old_symbol);
-        } 
+        }
     }
 
     scale_text(text, label) {
         var current_style = this.get_style_from_text(text);
         if (current_style) {
-            console.log("Current style is: "+ current_style.name()); 
+            // console.log("Current style is: "+ current_style.name());
 
             var style_to_apply  = this.get_style_from_label_and_style(label, current_style, text);
             if (style_to_apply) {
-                console.log("Going to apply: "+ style_to_apply.name());
-                text.setStyle_(style_to_apply.style());    
+                // console.log("Going to apply: "+ style_to_apply.name());
+                text.setStyle_(style_to_apply.style());
             }
-        } else {
-            console.log('text layer style not found in doc or libraries');
         }
+        // else {
+        //     console.log('text layer style not found in doc or libraries');
+        // }
     }
 
     is_compatible_style(style) {
@@ -240,7 +243,7 @@ class StacksWell
         }
         return false;
     }
-    find_break_point_for_artboard(artboard) { 
+    find_break_point_for_artboard(artboard) {
         var width = artboard.frame().width();
         console.log('artboard width '+width);
         var found = 0;
@@ -249,7 +252,7 @@ class StacksWell
                 return this.labels[found];
             }
         }
-        
+
         return this.labels[found];
     }
 
