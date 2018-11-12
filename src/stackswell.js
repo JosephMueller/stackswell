@@ -15,7 +15,7 @@ class StacksWell
         return Array.from(this.context.document.selectedLayers().layers())
     }
 
-    // local and referenced foreign text shared styles
+    // local and referenced foreign shared text styles
     get avail_txt_styles() {
         var self = this;
         return Array.from(this.context
