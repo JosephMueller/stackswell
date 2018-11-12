@@ -585,31 +585,31 @@ function create_text_and_style(options) {
 
 	// add the style to shared style
 	var hexVal = options.naming_convention ? options.naming_convention : '#'+textStyleAttributes.NSColor.hexValue();
-	let ss;
-	const allocator = MSSharedStyle.alloc();
-	// Sketch 50, 51
-	if (allocator.initWithName_firstInstance) {
-		ss = allocator.initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style);
+	const style_name = options.style_name.replace('COLOR', hexVal);
+	let shared_style = context.document.documentData().layerTextStyles().sharedStyles().find(sharedStyle => {
+		return sharedStyle.name() == style_name;
+	});
+	if (shared_style != null) {
+        context.document.documentData().layerTextStyles().removeSharedObject(sharedStyle);
 	}
-	// sketch 52 onwards
-	else {
+    shared_style = MSSharedStyle.alloc();
 
-		ss = allocator.initWithName_style(options.style_name.replace('COLOR', hexVal), style)
+	if (shared_style.initWithName_firstInstance) {
+        // < v52
+        shared_style = shared_style.initWithName_firstInstance(style_name, style);
+    } else {
+		// >= v52
+        shared_style = shared_style.initWithName_style(style_name, style);
 	}
-
-	context.document.documentData().layerTextStyles().addSharedObject(ss); // TODO can cache upto .layerTextStyles()
+	context.document.documentData().layerTextStyles().addSharedObject(shared_style); // TODO can cache upto .layerTextStyles()
 
 	// replace the text in the layer
-	new_layer.replaceTextPreservingAttributeRanges(options.replace_text_with.replace('COLOR', hexVal));
-	new_layer.setName(options.replace_text_with.replace('COLOR', hexVal));
-
-	// set the style of the layer
-	new_layer.setStyle(style);
-	// textStyle.syncOwningTextLayerWithThisStyle();
-
-	// save the shared style
-	ss.updateToMatch(style);
-	ss.resetReferencingInstances();
+	new_layer.replaceTextPreservingAttributeRanges(style_name);
+	new_layer.setName(style_name);
+	new_layer.setSharedStyle(shared_style);
+    new_layer.setStyle(style);
+    shared_style.updateToMatch(style);
+    shared_style.resetReferencingInstances();
 	return new_layer;
 }
 
