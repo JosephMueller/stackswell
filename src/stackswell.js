@@ -4,21 +4,24 @@ class StacksWell
         this.labels = options.labels;
         this.break_points = options.break_points;
         this.context = options.context;
+        this.document = options.context.document;
         this.style_map = {};
         this.librariesController = AppController.sharedInstance().librariesController();
         this.libraries_map = {};
         this.foreign_text_styles_map = {};
     }
+
     get selected_layers() {
         return Array.from(this.context.document.selectedLayers().layers())
     }
+
+    // local and referenced foreign text shared styles
     get avail_txt_styles() {
         var self = this;
         return Array.from(this.context
             .document
             .documentData()
-            .layerTextStyles()
-            .objects()
+            .allTextStyles()
         ).filter(style => self.is_compatible_style(style));
     }
 
@@ -40,70 +43,49 @@ class StacksWell
     }
 
     init() {
-        var self = this;
-        this.avail_txt_styles.forEach(function (style) {
-            self.style_map[style.name()] = style;
-            self.style_map[style.style().objectID()] = self.style_map[style.name()];
+        // local and referenced foreign shared text styles
+        this.avail_txt_styles.forEach(sharedStyle => {
+            this.style_map[sharedStyle.name()] = sharedStyle;
+            this.style_map[sharedStyle.objectID()] = sharedStyle;
         });
-        this.librariesController.userLibraries().forEach(function (library) {
-            self.libraries_map[library.libraryID()] = {};
+
+        // foreign shared text styles
+        //console.log('Foreign text styles');
+        this.librariesController.userLibraries().forEach(library => {
+            this.libraries_map[library.libraryID()] = {};
             if (!library.document()
                 || !library.document().layerTextStyles()
                 || !library.document().layerTextStyles().sharedStyles()) {
                 return;
             }
-            library.document().layerTextStyles().sharedStyles().forEach(function (librarySharedStyle) {
-                if (!self.is_compatible_style(librarySharedStyle)) {
+            library.document().layerTextStyles().sharedStyles().forEach(shared_text_style => {
+                if (!this.is_compatible_style(shared_text_style)) {
                     return;
                 }
-                self.libraries_map[library.libraryID()][librarySharedStyle.style().objectID()] = librarySharedStyle;
-                self.libraries_map[library.libraryID()][librarySharedStyle.name()] = librarySharedStyle;
-                return
-
+                const data = {shared_text_style, library};
+                this.foreign_text_styles_map[shared_text_style.objectID()] = data;
+                this.foreign_text_styles_map[shared_text_style.name()] = data;
+                //console.log(`  ${sharedTextStyle.name()}`);
             });
         });
-        this.context.document.documentData().foreignTextStyles().forEach(style => {
-            self.foreign_text_styles_map[style.localShareID()] = style;
-        });
+
         print('completed initialization')
         return this;
     }
 
-    get_library_styles_map_from_text(text) {
-        if (!(text.style().objectID() in this.foreign_text_styles_map)) {
-            // console.log(text.style().objectID() + ' not in foreign_text_styles_map');
-            return {};
+    get_shared_text_style_from_library(name) {
+        const shared_text_style_data = this.foreign_text_styles_map[name];
+        if (shared_text_style_data != null) {
+            const foreign_text_style = MSForeignTextStyle.alloc().initWithOriginalObject_inLibrary(shared_text_style_data.shared_text_style, shared_text_style_data.library);
+            this.document.documentData().addForeignTextStyle(foreign_text_style);
+            const shared_text_style = foreign_text_style.localObject();
+            this.style_map[shared_text_style.name()] = shared_text_style;
+            this.style_map[shared_text_style.objectID()] = shared_text_style;
+            return shared_text_style;
         }
-
-        var foreign_style = this.foreign_text_styles_map[text.style().objectID()];
-
-        if (!(foreign_style.libraryID() in this.libraries_map)) {
-            // console.log(foreign_style.libraryID() + ' not in libraries_map');
-            return {};
-        }
-
-        return this.libraries_map[foreign_style.libraryID()];
+        return null;
     }
 
-    get_library_style_of_text(text) {
-        if (!(text.style().objectID() in this.foreign_text_styles_map)) {
-            // console.log(text.style().objectID() + ' not in foreign_text_styles_map');
-            return null;
-        }
-
-        var foreign_style = this.foreign_text_styles_map[text.style().objectID()];
-
-        if (!(foreign_style.libraryID() in this.libraries_map)) {
-            // console.log(foreign_style.libraryID() + ' not in libraries_map');
-            return null;
-        }
-
-        if (!(foreign_style.remoteShareID() in this.libraries_map[foreign_style.libraryID()])) {
-            // console.log('foreign remoteShareID not found in libraries map');
-            return null;
-        }
-        return this.libraries_map[foreign_style.libraryID()][foreign_style.remoteShareID()];
-    }
     get_next_smaller_label(label) {
         for (var i = this.labels.length - 1; i >=0; i--) {
             for (var j = 0; j < this.labels[i].length; j++) {
@@ -135,12 +117,16 @@ class StacksWell
             //  ex. label = ['XL', '.XL', '_XL'], pieces = ['H1','Black','Left']
             //      bp = 'XL/H1/Black/Left Style'
             var bp = [label[i]].concat(pieces).join('/');
+            //console.log(`${text.parentArtboard().name()}.${text.name()}: ${style.name()}`);
             // if we have a style that maps to this reconstructed name
             //  give it back, otherwise try the next available break point in labels
             if (bp in this.style_map) {
                 return this.style_map[bp];
-            } else if (bp in this.get_library_styles_map_from_text(text)) { // TODO this could prob get cached
-                return this.get_library_styles_map_from_text(text)[bp];
+            } else {
+                const shared_text_style = this.get_shared_text_style_from_library(bp);
+                if (shared_text_style != null) {
+                    return shared_text_style;
+                }
             }
         }
         // console.log('No style found for break point & style '+ label + ' ' + style);
@@ -151,11 +137,7 @@ class StacksWell
         }
     }
 
-    get_style_from_text(text) {
-        return this.style_map[text.style().objectID()] || this.get_library_style_of_text(text);
-    }
-
-    getStyleFromName(name) {
+  getStyleFromName(name) {
         return this.style_map[name];
     }
 
@@ -206,19 +188,18 @@ class StacksWell
     }
 
     scale_text(text, label) {
-        var current_style = this.get_style_from_text(text);
+        var current_style = text.sharedStyle();
         if (current_style) {
-            // console.log("Current style is: "+ current_style.name());
+            console.log(`  Current style is: ${current_style.name()}`);
 
             var style_to_apply  = this.get_style_from_label_and_style(label, current_style, text);
             if (style_to_apply) {
-                // console.log("Going to apply: "+ style_to_apply.name());
-                text.setStyle_(style_to_apply.style());
+                console.log(`  Going to apply: ${style_to_apply.name()}`);
+                text.setSharedStyle(style_to_apply);
             }
+        } else {
+            console.log(`  text layer ${text.name()} has no text style`);
         }
-        // else {
-        //     console.log('text layer style not found in doc or libraries');
-        // }
     }
 
     is_compatible_style(style) {
