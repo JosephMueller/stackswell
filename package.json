@@ -8,10 +8,19 @@
   "skpm": {
     "name": "Stackswell",
     "manifest": "src/manifest.json",
-    "main": "plugin.sketchplugin",
+    "main": "stackswell.sketchplugin",
+    "appcast": "https://stackswell.bitbucket.io/stackswell/appcast.xml",
     "assets": [
       "assets/**/*"
     ]
+  },
+  "gulp": {
+    "pluginId": "stackswell",
+    "updateFilename": "update.zip",
+    "appcastFilename": "appcast.xml",
+    "buildPath": "build",
+    "baseUrl": "https://stackswell.bitbucket.io/stackswell",
+    "bitbucketUsername": "stackswell"
   },
   "scripts": {
     "build": "skpm-build",
@@ -20,7 +29,10 @@
     "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {
-    "@skpm/builder": "^0.5.2"
+    "@skpm/builder": "^0.5.2",
+    "gulp": "^3.9.1",
+    "gulp-shell": "^0.6.5",
+    "gulp-template": "^5.0.0"
   },
   "author": "Joseph Mueller <hi@stackswell.io>"
 }

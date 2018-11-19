@@ -15,4 +15,7 @@ src/notes
 # src maps
 *.map
 
-plugin.sketchplugin
+*.sketchplugin
+
+build
+*.local.json
