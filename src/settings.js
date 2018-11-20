@@ -26,8 +26,7 @@ export default class Settings {
     static KEY = "settings";
 
     static load(context) {
-        const user_defaults = NSUserDefaults.alloc().initWithSuiteName(context.plugin.identifier());
-        let settings = context.command.valueForKey_onDocument(Settings.KEY, context.document.documentData());
+        let settings = JSON.parse(context.command.valueForKey_onDocument(Settings.KEY, context.document.documentData()));
         //console.log(settings);
         if (settings == null) {
             settings = DEFAULT_SETTINGS;
@@ -44,13 +43,14 @@ export default class Settings {
             breakpoint_scale: dialog.model.get('breakpoint_scale', DEFAULT_SETTINGS.breakpoint_scale, {is_number: true}),
             chosen_breakpoints: dialog.model.getArray('chosen_breakpoints'),
             breakpoint_labels: dialog.model.getArray('breakpoint_labels', DEFAULT_SETTINGS.breakpoint_labels),
-            naming_convention: dialog.model.get('naming_convention', DEFAULT_SETTINGS.naming_convention, Constants.NAMING_CONVENTION_PLACHOLDER_TEXT),
+            naming_convention: dialog.model.get('naming_convention', DEFAULT_SETTINGS.naming_convention, {placeholder: Constants.NAMING_CONVENTION_PLACHOLDER_TEXT}),
             rounding: dialog.model.get('rounding'),
-            text_color: text_color
+            text_color: String(text_color)
         };
-        //console.log(settings);
-        context.command.setValue_forKey_onDocument(settings, Settings.KEY, context.document.documentData());
-        return settings;
+        //console.log(`save() ${JSON.stringify(settings)}`, settings);
+        const settingsStr = JSON.stringify(settings);
+        context.command.setValue_forKey_onDocument(settingsStr, Settings.KEY, context.document.documentData());
+        return JSON.parse(settingsStr);
     }
 
 }

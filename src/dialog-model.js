@@ -22,14 +22,14 @@ export default class DialogModel {
         if (prop_type == 'NSPopUpButton') {
             return prop.titleOfSelectedItem();
         } else if (prop_type == 'NSTextField' || prop_type == 'NSButton') {
-            const val = prop.stringValue();
+            const val = String(prop.stringValue());
             if (val.trim().length == 0) {
                 return defaultValue;
             }
             if (options.is_number && isNaN(val)) {
                 return defaultValue;
             }
-            if (options.placeholder_text && val == options.placeholder_text) {
+            if (options.placeholder && val == options.placeholder) {
                 return "";
             }
             return val;

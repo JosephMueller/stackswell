@@ -230,7 +230,7 @@ function create_dialog(settings, context) {
         y: viewLine,
         width: control_width,
         height: viewLineHeight,
-        initValue: settings.naming_convention.trim().length === 0 ? Constants.NAMING_CONVENTION_PLACHOLDER_TEXT : settings.naming_convention, // TODO make this a variable/search if changing
+        initValue: settings.naming_convention.length === 0 ? Constants.NAMING_CONVENTION_PLACHOLDER_TEXT : settings.naming_convention, // TODO make this a variable/search if changing
         label: {
             x: 0,
             y: viewLine,
@@ -311,7 +311,7 @@ function reverse_layers_and_fix_x(new_layers, chosen_alignments, type_scale, bre
 
     new_layers.forEach(function (layer) {
         var pieces = layer.stringValue().split('/'),
-                current_column = alignments.indexOf(pieces.pop());
+                current_column = ALIGNMENTS.indexOf(pieces.pop());
         layer.frame().setX(layer.frame().x() + max_width * Math.max(2, breakpoint_scale, type_scale) * current_column);
     });
 
@@ -391,13 +391,13 @@ function create_text_and_style(options) {
     style.setTextStyle_(textStyle);
 
     // add the style to shared style
-    var hexVal = options.naming_convention ? options.naming_convention : '#' + textStyleAttributes.NSColor.hexValue();
+    var hexVal = options.naming_convention ? options.naming_convention : '#' + current_attributes.MSAttributedStringColorAttribute.hexValue();
     const style_name = options.style_name.replace('COLOR', hexVal);
     let shared_style = context.document.documentData().layerTextStyles().sharedStyles().find(sharedStyle => {
         return sharedStyle.name() == style_name;
     });
     if (shared_style != null) {
-        context.document.documentData().layerTextStyles().removeSharedObject(sharedStyle);
+        context.document.documentData().layerTextStyles().removeSharedObject(shared_style);
     }
     shared_style = MSSharedStyle.alloc();
 
@@ -459,7 +459,7 @@ function handle_sumbit(dialog, old_settings, context) {
                 chosen_breakpoints = dialog.model.getArray('chosen_breakpoints'),
                 breakpoint_labels = dialog.model.getArray('breakpoint_labels', DEFAULT_SETTINGS.breakpoint_labels),
                 rounding = get_rounding(dialog.model.get('rounding')),
-                naming_convention = dialog.model.get('naming_convention', DEFAULT_SETTINGS.naming_convention, {placeholder_text: Constants.NAMING_CONVENTION_PLACHOLDER_TEXT}),
+                naming_convention = dialog.model.get('naming_convention', DEFAULT_SETTINGS.naming_convention, {placeholder: Constants.NAMING_CONVENTION_PLACHOLDER_TEXT}),
                 y = current_layer.frame().y() + 25, // + start 25 pixels below the selected text layer
                 x = current_layer.frame().x();
 
