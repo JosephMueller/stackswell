@@ -9,11 +9,6 @@
       "script": "./create-type-system.js"
     },
     {
-      "name": "Breakpoint Settings",
-      "identifier": "breakpoint-settings-id",
-      "script": "./breakpoint-settings.js"
-    },
-    {
       "name": "Responsive Type",
       "identifier": "responsive-type-id",
       "script": "./responsive-type.js"
@@ -33,7 +28,6 @@
     "title": "Stackswell",
     "items": [
       "create-type-system-id",
-      "breakpoint-settings-id",
       "-",
       "responsive-type-id",
       {
