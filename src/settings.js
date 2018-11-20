@@ -21,6 +21,7 @@ XL: 1199+
 export const DEFAULT_BREAKPOINTS = [575, 766, 990, 1198];
 export const HEADER_TAGS = ["P", "H6", "H5", "H4", "H3", "H2", "H1"];
 export const ALIGNMENTS = ["Left", "Center", "Right"];
+export const LABEL_VARIANTS = [["XL", ".XL", "_XL"]];
 
 export default class Settings {
     static KEY = "settings";

@@ -1,5 +1,5 @@
 import Settings from "./settings";
-import { DEFAULT_BREAKPOINTS } from "./settings";
+import { DEFAULT_BREAKPOINTS, LABEL_VARIANTS } from "./settings";
 
 class StacksWell
 {
@@ -45,18 +45,26 @@ class StacksWell
 
     init() {
         const settings = Settings.load(this.context);
-        this.labels = Array.from(settings.breakpoint_labels);
+        this.labels = [];
         this.break_points = [];
-        // there is 1 less breakpoints than labels
-        for (let i = 0; i < this.labels.length - 1; i++) {
-            const label = this.labels[i];
-            if (isNaN(label)) {
-                this.break_points[i] = DEFAULT_BREAKPOINTS[i];
-            } else {
-                this.break_points[i] = parseInt(label);
+        settings.breakpoint_labels.forEach((label, i) => {
+            if (!LABEL_VARIANTS.some(label_variant => {
+               if (label_variant.includes(label)) {
+                   this.labels.push(label_variant);
+                   return true;
+               }
+            })) {
+                this.labels.push([label]);
             }
-        }
-        console.log(`labels: ${this.labels}, breakpoints: ${this.break_points}`);
+            if (i < settings.breakpoint_labels.length - 1) {
+                if (isNaN(label)) {
+                    this.break_points[i] = [DEFAULT_BREAKPOINTS[i]];
+                } else {
+                    this.break_points[i] = [parseInt(label)];
+                }
+            }
+        });
+        console.log(`labels: ${JSON.stringify(this.labels)}, breakpoints: ${this.break_points}`);
 
         // local and referenced foreign shared text styles
         this.avail_txt_styles.forEach(sharedStyle => {
