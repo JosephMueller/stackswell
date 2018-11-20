@@ -1,10 +1,11 @@
+import Settings from "./settings";
+import { DEFAULT_BREAKPOINTS } from "./settings";
+
 class StacksWell
 {
-    constructor(options) {
-        this.labels = options.labels;
-        this.break_points = options.break_points;
-        this.context = options.context;
-        this.document = options.context.document;
+    constructor(context) {
+        this.context = context;
+        this.document = context.document;
         this.style_map = {};
         this.librariesController = AppController.sharedInstance().librariesController();
         this.libraries_map = {};
@@ -43,6 +44,20 @@ class StacksWell
     }
 
     init() {
+        const settings = Settings.load(this.context);
+        this.labels = Array.from(settings.breakpoint_labels);
+        this.break_points = [];
+        // there is 1 less breakpoints than labels
+        for (let i = 0; i < this.labels.length - 1; i++) {
+            const label = this.labels[i];
+            if (isNaN(label)) {
+                this.break_points[i] = DEFAULT_BREAKPOINTS[i];
+            } else {
+                this.break_points[i] = parseInt(label);
+            }
+        }
+        console.log(`labels: ${this.labels}, breakpoints: ${this.break_points}`);
+
         // local and referenced foreign shared text styles
         this.avail_txt_styles.forEach(sharedStyle => {
             this.style_map[sharedStyle.name()] = sharedStyle;
@@ -229,7 +244,7 @@ class StacksWell
         console.log('artboard width '+width);
         var found = 0;
         for (; found < this.break_points.length; found++) {
-            if (width < this.break_points[found]) {
+            if (width <= this.break_points[found]) {
                 return this.labels[found];
             }
         }

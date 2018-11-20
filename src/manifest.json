@@ -4,6 +4,16 @@
   "icon": "icon.png",
   "commands": [
     {
+      "name": "Create Type System",
+      "identifier": "create-type-system-id",
+      "script": "./create-type-system.js"
+    },
+    {
+      "name": "Breakpoint Settings",
+      "identifier": "breakpoint-settings-id",
+      "script": "./breakpoint-settings.js"
+    },
+    {
       "name": "Responsive Type",
       "identifier": "responsive-type-id",
       "script": "./responsive-type.js"
@@ -17,17 +27,13 @@
       "name": "Fit To Original Symbol",
       "identifier": "smart-symbols-update-size-id",
       "script": "./smart-symbols-update-size.js"
-    },
-    {
-      "name": "Create Type System",
-      "identifier": "create-type-system-id",
-      "script": "./create-type-system.js"
     }
   ],
   "menu": {
     "title": "Stackswell",
     "items": [
       "create-type-system-id",
+      "breakpoint-settings-id",
       "-",
       "responsive-type-id",
       {

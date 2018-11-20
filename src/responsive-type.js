@@ -1,23 +1,7 @@
 import StacksWell from './stackswell.js'
 
 export default function (context) {
-    var stacks_well = new StacksWell({
-        labels: [
-            ['XS'],
-            ['SM'],
-            ['MD'],
-            ['LG'],
-            ['.XL', 'XL', '_XL']
-        ],
-        break_points: [
-            576, // 0-575 xs
-            767, // 576-766 sm
-            991, // 767-990 md
-            1199 // 990-1198 lg
-                 // 1999+ xl
-        ],
-        context: context
-    }).init();
+    var stacks_well = new StacksWell(context).init();
     function act_on_layer(layer, break_point, stacks_well) {
         if (layer.class() == "MSTextLayer") {
             stacks_well.scale_text(layer, break_point);
