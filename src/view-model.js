@@ -20,13 +20,19 @@ export default class ViewModel {
         var prop = this.properties[value] || value;
         var prop_type = prop.class();
         if (prop_type == 'NSPopUpButton') {
-            return prop.titleOfSelectedItem();
+            return String(prop.titleOfSelectedItem());
         } else if (prop_type == 'NSTextField' || prop_type == 'NSButton') {
-            const val = String(prop.stringValue());
-            if (val.trim().length == 0) {
-                return defaultValue;
+            let val = String(prop.stringValue());
+            if (options.is_number) {
+                if (isNaN(val)) {
+                    return defaultValue;
+                }
+                const numberFormatter = NSNumberFormatter.new();
+                numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+                const number = numberFormatter.numberFromString(val);
+                return String(number.stringValue());
             }
-            if (options.is_number && isNaN(val)) {
+            if (val.trim().length == 0) {
                 return defaultValue;
             }
             if (options.placeholder && val == options.placeholder) {

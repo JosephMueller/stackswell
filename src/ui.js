@@ -8,7 +8,15 @@ export default class UI {
                 settings.height
         ));
 
-        textField.setStringValue(settings.initValue);
+        let value;
+        if (settings.isNumber) {
+            const numberFormatter = NSNumberFormatter.new();
+            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+            value = numberFormatter.stringFromNumber(NSNumber.numberWithDouble(NSString.alloc().initWithString(settings.initValue).doubleValue()));
+        } else {
+            value = settings.initValue;
+        }
+        textField.setStringValue(value);
 
         view.addSubview(textField);
 

@@ -32,6 +32,7 @@ function create_dialog(settings) {
         width: control_width,
         height: viewLineHeight,
         initValue: settings.type_scale,
+        isNumber: true,
         label: {
             x: 0,
             y: viewLine,
@@ -49,6 +50,7 @@ function create_dialog(settings) {
         width: control_width,
         height: viewLineHeight,
         initValue: settings.line_height,
+        isNumber: true,
         label: {
             x: 0,
             y: viewLine,
@@ -66,6 +68,7 @@ function create_dialog(settings) {
         width: control_width,
         height: viewLineHeight,
         initValue: settings.paragraph_spacing,
+        isNumber: true,
         label: {
             x: 0,
             y: viewLine,
@@ -121,6 +124,7 @@ function create_dialog(settings) {
         width: control_width,
         height: viewLineHeight,
         initValue: settings.breakpoint_scale,
+        isNumber: true,
         label: {
             x: 0,
             y: viewLine,
@@ -451,10 +455,10 @@ function handle_sumbit(dialog, old_settings, context) {
         var current_layer_parent = current_layer.parentGroup();
         var fs = current_layer.fontSize(),
                 lh = parseFloat(current_layer.lineHeight()),
-                ts = parseFloat(dialog.model.get('type_scale', DEFAULT_SETTINGS.type_scale), {is_number: true}),
-                ls = parseFloat(dialog.model.get('line_height', DEFAULT_SETTINGS.line_height), {is_number: true}),
-                bs = parseFloat(dialog.model.get('breakpoint_scale', DEFAULT_SETTINGS.breakpoint_scale), {is_number: true}),
-                ps = parseFloat(dialog.model.get('paragraph_spacing', DEFAULT_SETTINGS.paragraph_spacing), {is_number: true}),
+                ts = parseFloat(dialog.model.get('type_scale', DEFAULT_SETTINGS.type_scale, {is_number: true})),
+                ls = parseFloat(dialog.model.get('line_height', DEFAULT_SETTINGS.line_height, {is_number: true})),
+                bs = parseFloat(dialog.model.get('breakpoint_scale', DEFAULT_SETTINGS.breakpoint_scale, {is_number: true})),
+                ps = parseFloat(dialog.model.get('paragraph_spacing', DEFAULT_SETTINGS.paragraph_spacing, {is_number: true})),
                 chosen_alignments = dialog.model.getArray('alignments'),
                 chosen_breakpoints = dialog.model.getArray('chosen_breakpoints'),
                 breakpoint_labels = dialog.model.getArray('breakpoint_labels', DEFAULT_SETTINGS.breakpoint_labels),
