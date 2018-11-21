@@ -1,4 +1,4 @@
-export default class DialogModel {
+export default class ViewModel {
 
     constructor() {
         this.properties = {};

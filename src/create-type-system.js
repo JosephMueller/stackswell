@@ -3,7 +3,7 @@ import Settings, { DEFAULT_SETTINGS, HEADER_TAGS, ALIGNMENTS } from "./settings"
 import Constants from "./constants";
 import Spacer from "./spacer.js";
 import UI from "./ui.js";
-import DialogModel from "./dialog-model";
+import ViewModel from "./view-model";
 import Utils from "./utils";
 import { rename_text_styles } from "./common";
 
@@ -13,7 +13,7 @@ var alignment_is = [
     1
 ];
 
-function create_dialog(settings, context) {
+function create_dialog(settings) {
     const dialog = UI.build_dialog("Create Type System", "Generate System", "Cancel");
 
     // Creating the view
@@ -264,36 +264,36 @@ function create_dialog(settings, context) {
     };
 
     const accessoryView = UI.build_accessory_view(300, viewHeight, dialog)
-    var model = new DialogModel();
+    var view_model = new ViewModel();
 
-    model.addProp('type_scale', UI.createTextField(accessoryView, type_scale));
+    view_model.addProp('type_scale', UI.createTextField(accessoryView, type_scale));
     UI.createLabel(accessoryView, type_scale.label);
 
-    model.addProp('line_height', UI.createTextField(accessoryView, line_height));
+    view_model.addProp('line_height', UI.createTextField(accessoryView, line_height));
     UI.createLabel(accessoryView, line_height.label);
 
-    model.addProp('paragraph_spacing', UI.createTextField(accessoryView, paragraph_spacing));
+    view_model.addProp('paragraph_spacing', UI.createTextField(accessoryView, paragraph_spacing));
     UI.createLabel(accessoryView, paragraph_spacing.label);
 
-    alignment_checkboxes.checkBoxes.forEach(checkbox => model.addPropArray('alignments', UI.createCheckBox(accessoryView, checkbox)));
+    alignment_checkboxes.checkBoxes.forEach(checkbox => view_model.addPropArray('alignments', UI.createCheckBox(accessoryView, checkbox)));
     UI.createLabel(accessoryView, alignment_checkboxes.label);
 
-    model.addProp('breakpoint_scale', UI.createTextField(accessoryView, breakpoint_scale));
+    view_model.addProp('breakpoint_scale', UI.createTextField(accessoryView, breakpoint_scale));
     UI.createLabel(accessoryView, breakpoint_scale.label);
 
-    breakpoints.checkBoxes.forEach(checkbox => model.addPropArray('chosen_breakpoints', UI.createCheckBox(accessoryView, checkbox)));
-    breakpoints.textFields.forEach(text_field => model.addPropArray('breakpoint_labels', UI.createTextField(accessoryView, text_field)));
+    breakpoints.checkBoxes.forEach(checkbox => view_model.addPropArray('chosen_breakpoints', UI.createCheckBox(accessoryView, checkbox)));
+    breakpoints.textFields.forEach(text_field => view_model.addPropArray('breakpoint_labels', UI.createTextField(accessoryView, text_field)));
     UI.createLabel(accessoryView, breakpoints.label);
 
-    model.addProp('naming_convention', UI.createTextField(accessoryView, naming_convention));
+    view_model.addProp('naming_convention', UI.createTextField(accessoryView, naming_convention));
     UI.createLabel(accessoryView, naming_convention.label);
 
-    model.addProp('rounding', UI.createDropdown(accessoryView, rounding));
+    view_model.addProp('rounding', UI.createDropdown(accessoryView, rounding));
     UI.createLabel(accessoryView, rounding.label);
 
     return {
         dialog: dialog,
-        model: model
+        model: view_model
     };
 }
 
@@ -446,7 +446,7 @@ function handle_sumbit(dialog, old_settings, context) {
         }
 
         const settings = Settings.save(dialog, context, current_layer.textColor().immutableModelObject().hexValue());
-         rename_text_styles(old_settings, settings, context.document.documentData());
+        rename_text_styles(old_settings, settings, context.document.documentData());
 
         var current_layer_parent = current_layer.parentGroup();
         var fs = current_layer.fontSize(),
@@ -524,5 +524,5 @@ function handle_sumbit(dialog, old_settings, context) {
 export default function (context) {
     const settings = Settings.load(context);
     const old_settings = Utils.deep_clone(settings);
-    handle_sumbit(create_dialog(settings, context), old_settings, context);
+    handle_sumbit(create_dialog(settings), old_settings, context);
 }
