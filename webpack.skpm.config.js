@@ -1,5 +1,5 @@
-module.exports = function(config, isPluginCommand) {
-    if (isPluginCommand && process.env.NODE_ENV === 'production') {
+module.exports = function(config) {
+    if (process.env.NODE_ENV === 'production') {
         config.plugins.some(section => {
             if (section.options !== undefined && section.options.uglifyOptions !== undefined) {
                 const uglifyOptions = section.options.uglifyOptions;
