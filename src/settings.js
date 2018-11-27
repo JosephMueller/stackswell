@@ -27,11 +27,39 @@ export default class Settings {
     static KEY = "settings";
 
     static load(context) {
-        let settings = JSON.parse(context.command.valueForKey_onDocument(Settings.KEY, context.document.documentData()));
-        //console.log(settings);
+        const documentData = context.document.documentData();
+        // get settings from current document
+        let settings = this._getSettings(documentData);
         if (settings == null) {
-            settings = DEFAULT_SETTINGS;
+            const libraryNamesById = new Map();
+            // get libraries of foreign text styles
+            documentData.foreignTextStyles().forEach(foreignTextStyle => {
+               libraryNamesById.set(String(foreignTextStyle.libraryID()), String(foreignTextStyle.sourceLibraryName()));
+            });
+            // get libraries of foreign symbols
+            documentData.foreignSymbols().forEach(foreignSymbol => {
+                libraryNamesById.set(String(foreignSymbol.libraryID()), String(foreignSymbol.sourceLibraryName()));
+            });
+            // look for settings in libraries, pick the first one it finds settings for
+            for (let libraryData of libraryNamesById) {
+                const [libraryId, libraryName] = libraryData;
+                const library = this._getLibrary(libraryId, libraryName);
+                if (library != null) {
+                    settings = this._getSettings(library.document());
+                    if (settings != null) {
+                        console.log(`Got settings from library ${libraryName}`);
+                        break;
+                    }
+                }
+            }
+            if (settings == null) {
+                console.log("Couldn't getting settings document or library, using default settings");
+                settings = DEFAULT_SETTINGS;
+            }
+        } else {
+            console.log('Got settings from document');
         }
+        console.log(settings);
         return settings;
     }
 
@@ -52,6 +80,24 @@ export default class Settings {
         const settingsStr = JSON.stringify(settings);
         context.command.setValue_forKey_onDocument(settingsStr, Settings.KEY, context.document.documentData());
         return JSON.parse(settingsStr);
+    }
+
+    static _getLibrary(libraryId, libraryName) {
+        let closeMatch, exactMatch;
+        AppController.sharedInstance().librariesController().userLibraries().some(library => {
+            if (library.libraryID() == libraryId) {
+                closeMatch = library;
+                if (library.name() == libraryName) {
+                    exactMatch = library;
+                    return true;
+                }
+            }
+        });
+        return exactMatch ? exactMatch : closeMatch;
+    }
+
+    static _getSettings(documentData) {
+        return JSON.parse(context.command.valueForKey_onDocument(Settings.KEY, documentData));
     }
 
 }
