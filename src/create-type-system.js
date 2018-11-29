@@ -384,7 +384,7 @@ function create_text_and_style(options) {
     // create a new text style
     var textStyleAttributes = {
         // NSColor.colorWithRed_green_blue_alpha(1,0,0,1)
-        'NSColor': current_attributes.MSAttributedStringColorAttribute.NSColorWithColorSpace(null),
+        'MSAttributedStringColorAttribute': current_attributes.MSAttributedStringColorAttribute,
         'NSFont': NSFont.fontWithName_size_(options.current_layer.font().fontName(), options.fs),
         'NSParagraphStyle': new_para_style
     };
@@ -419,8 +419,6 @@ function create_text_and_style(options) {
     new_layer.setName(style_name);
     new_layer.setSharedStyle(shared_style);
     new_layer.setStyle(style);
-    shared_style.updateToMatch(style);
-    shared_style.resetReferencingInstances();
     return new_layer;
 }
 
