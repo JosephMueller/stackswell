@@ -10,7 +10,7 @@ export default function (context) {
 
         var replacement = stacks_well.get_master_symbol_for_breakpoint(break_point, old_symbol_master);
         // console.log(replacement);
-        if (replacement) {
+        if (replacement && replacement.symbolID() != old_symbol_master.symbolID()) {
             var replacement_frame = replacement.frame();
             // console.log('Replace with:'+replacement);
             old_symbol.changeInstanceToSymbol(replacement);

@@ -85,7 +85,7 @@ export default class Settings {
     static _getLibrary(libraryId, libraryName) {
         let closeMatch, exactMatch;
         AppController.sharedInstance().librariesController().userLibraries().some(library => {
-            if (library.libraryID() == libraryId) {
+            if (library.enabled() && library.libraryID() == libraryId) {
                 closeMatch = library;
                 if (library.name() == libraryName) {
                     exactMatch = library;

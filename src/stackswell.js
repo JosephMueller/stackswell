@@ -169,7 +169,7 @@ class StacksWell
         //  and if it is, use the library symbols as choices for replacement
         var library = this.librariesController.libraryForShareableObject(old_symbol);
         // console.log('Has library? '+library);
-        var avail_symbols = library ? library.document().localSymbols() : this.avail_symbols;
+        var avail_symbols = library && library.enabled() ? library.document().localSymbols() : this.avail_symbols;
 
         for (var j = 0; j < break_point.length; j++) {
             for (var i = 0; i < avail_symbols.length; i++) {
