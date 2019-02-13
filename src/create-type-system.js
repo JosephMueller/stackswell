@@ -252,8 +252,8 @@ function create_dialog(settings) {
         height: viewLineHeight,
         options: [
             'Normal',
-            'Multiples of Four',
-            'Multiples of Eight',
+            'Multiples of 4',
+            'Multiples of 8',
             'None'
         ],
         selected_option: settings.rounding,
