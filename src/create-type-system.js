@@ -585,8 +585,25 @@ function create_text_and_style(options) {
 
 	// add the style to shared style
 	var hexVal = options.naming_convention ? options.naming_convention : '#'+textStyleAttributes.NSColor.hexValue();
-	var ss = MSSharedStyle.alloc().initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style); 
-	context.document.documentData().layerTextStyles().addSharedObject(ss); // TODO can cache upto .layerTextStyles()
+
+	var container = context.document.documentData().layerTextStyles();
+	var sharedStyle;
+
+	// Sketch < 50
+	if (container.addSharedStyleWithName_firstInstance) {
+		sharedStyle = container.addSharedStyleWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style);
+	} else {
+		var allocator = MSSharedStyle.alloc();
+		// Sketch 50, 51
+		if (allocator.initWithName_firstInstance) {
+			sharedStyle = allocator.initWithName_firstInstance(options.style_name.replace('COLOR', hexVal), style);
+		} else {
+			sharedStyle = allocator.initWithName_style(options.style_name.replace('COLOR', hexVal), style);
+		}
+
+		container.addSharedObject(sharedStyle);
+	}
+
 
 	// replace the text in the layer
 	new_layer.replaceTextPreservingAttributeRanges(options.replace_text_with.replace('COLOR', hexVal));
@@ -597,8 +614,8 @@ function create_text_and_style(options) {
 	// textStyle.syncOwningTextLayerWithThisStyle();
 
 	// save the shared style
-	ss.updateToMatch(style);
-	ss.resetReferencingInstances();
+	sharedStyle.updateToMatch(style);
+	sharedStyle.resetReferencingInstances();
 	return new_layer;
 }
 
