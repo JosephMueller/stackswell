@@ -1,17 +1,26 @@
 {
   "name": "Stackswell",
   "description": "Design responsively, faster, smarter, and more consistently.",
-  "version": "1.1.7",
+  "version": "1.1.10",
   "engines": {
     "sketch": ">=3.0"
   },
   "skpm": {
     "name": "Stackswell",
     "manifest": "src/manifest.json",
-    "main": "plugin.sketchplugin",
+    "main": "Stackswell.sketchplugin",
+    "appcast": "https://stackswell.bitbucket.io/stackswell/appcast.xml",
     "assets": [
       "assets/**/*"
     ]
+  },
+  "gulp": {
+    "pluginId": "stackswell",
+    "updateFilename": "update.zip",
+    "appcastFilename": "appcast.xml",
+    "buildPath": "build",
+    "baseUrl": "https://stackswell.bitbucket.io/stackswell",
+    "bitbucketUsername": "stackswell"
   },
   "scripts": {
     "build": "skpm-build",
@@ -20,7 +29,12 @@
     "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {
-    "@skpm/builder": "^0.5.2"
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@skpm/builder": "^0.5.2",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-shell": "^0.6.5",
+    "gulp-template": "^5.0.0"
   },
   "author": "Joseph Mueller <hi@stackswell.io>"
 }
