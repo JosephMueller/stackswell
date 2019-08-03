@@ -3,7 +3,9 @@
 Stackswell is no longer being updated but feel free to fork the code. 
 
 Thanks,
+
 Joseph
+
 hi@stackswell.io
 
 ## 📄 License
