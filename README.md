@@ -1,6 +1,14 @@
 # Stackswell - No Longer Updated
 
-Stackswell for Sketch is no longer being updated. Feel free to fork the code. 
+Stackswell is no longer being updated but feel free to fork the code. 
 
 Thanks,
-Joe
+Joseph
+hi@stackswell.io
+
+## 📄 License
+
+Stackswell is MIT licensed, as found in the [LICENSE][l] file.
+
+[l]: https://github.com/JosephMueller/stackswell/blob/master/LICENSE
+
